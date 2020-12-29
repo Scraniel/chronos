@@ -3,9 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29926.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "chronos", "src\chronos.csproj", "{07A5A4E3-8DC7-4368-BE38-A536966E3398}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chronos.Core", "src\Core\Chronos.Core.csproj", "{64F5A808-2563-48A3-9DE8-120700972444}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tests", "tests\tests.csproj", "{03A1E122-6538-4554-9055-18F795F4F127}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chronos.Tests.Core", "tests\.NET Core\Chronos.Tests.Core.csproj", "{1957621D-DAA1-4D5D-AB63-064DD3BFB32D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{89536306-B4ED-4E26-B38C-197E81F0A741}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{BD4BB505-47EF-4E57-9E4A-DBC40652DA5E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronos.Tests.Framework", "tests\.NET Framework\Chronos.Tests.Framework.csproj", "{F7D4AE3D-66DC-4C23-B271-5854CFBFD026}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,17 +19,26 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{07A5A4E3-8DC7-4368-BE38-A536966E3398}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{07A5A4E3-8DC7-4368-BE38-A536966E3398}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{07A5A4E3-8DC7-4368-BE38-A536966E3398}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{07A5A4E3-8DC7-4368-BE38-A536966E3398}.Release|Any CPU.Build.0 = Release|Any CPU
-		{03A1E122-6538-4554-9055-18F795F4F127}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{03A1E122-6538-4554-9055-18F795F4F127}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{03A1E122-6538-4554-9055-18F795F4F127}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{03A1E122-6538-4554-9055-18F795F4F127}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64F5A808-2563-48A3-9DE8-120700972444}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64F5A808-2563-48A3-9DE8-120700972444}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64F5A808-2563-48A3-9DE8-120700972444}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64F5A808-2563-48A3-9DE8-120700972444}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1957621D-DAA1-4D5D-AB63-064DD3BFB32D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1957621D-DAA1-4D5D-AB63-064DD3BFB32D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1957621D-DAA1-4D5D-AB63-064DD3BFB32D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1957621D-DAA1-4D5D-AB63-064DD3BFB32D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7D4AE3D-66DC-4C23-B271-5854CFBFD026}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7D4AE3D-66DC-4C23-B271-5854CFBFD026}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7D4AE3D-66DC-4C23-B271-5854CFBFD026}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7D4AE3D-66DC-4C23-B271-5854CFBFD026}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{64F5A808-2563-48A3-9DE8-120700972444} = {BD4BB505-47EF-4E57-9E4A-DBC40652DA5E}
+		{1957621D-DAA1-4D5D-AB63-064DD3BFB32D} = {89536306-B4ED-4E26-B38C-197E81F0A741}
+		{F7D4AE3D-66DC-4C23-B271-5854CFBFD026} = {89536306-B4ED-4E26-B38C-197E81F0A741}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BB098665-CF57-4E73-B546-5299A41D4E3A}
