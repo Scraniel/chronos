@@ -5,7 +5,7 @@ using System;
 namespace Chronos.Tests.Core
 {
     [TestClass]
-    public class TimerEventUnitTests
+    public class TimerTaskUnitTests
     {
         class TestTimeTracker : ITimeTracker
         {
@@ -33,7 +33,7 @@ namespace Chronos.Tests.Core
             Action task = () => counter++;
             TimeSpan interval = TimeSpan.FromMinutes(5);
             ITimeTracker tracker = new TestTimeTracker();
-            ITimerEvent timerEvent = new TimerEvent(task, interval, timeTracker: tracker);
+            ITimerTask timerEvent = new TimerTask(task, interval, timeTracker: tracker);
 
             timerEvent.Execute().Wait();
             Assert.AreEqual(0, counter);
@@ -46,7 +46,7 @@ namespace Chronos.Tests.Core
             Action task = () => counter++;
             TimeSpan interval = TimeSpan.FromMinutes(5);
             TestTimeTracker tracker = new TestTimeTracker();
-            ITimerEvent timerEvent = new TimerEvent(task, interval, timeTracker: tracker);
+            ITimerTask timerEvent = new TimerTask(task, interval, timeTracker: tracker);
 
             tracker.PassTime(interval);
             timerEvent.Execute().Wait();
@@ -61,7 +61,7 @@ namespace Chronos.Tests.Core
             TimeSpan interval = TimeSpan.FromMinutes(5);
             TimeSpan repeatsFor = TimeSpan.FromMinutes(20);
             TestTimeTracker tracker = new TestTimeTracker();
-            ITimerEvent timerEvent = new TimerEvent(task, interval, repeatsFor, tracker);
+            ITimerTask timerEvent = new TimerTask(task, interval, repeatsFor, tracker);
 
             for(int i = 0; i < 4; i++)
             {
@@ -80,7 +80,7 @@ namespace Chronos.Tests.Core
             TimeSpan interval = TimeSpan.FromMinutes(5);
             TimeSpan repeatsFor = TimeSpan.FromMinutes(20);
             TestTimeTracker tracker = new TestTimeTracker();
-            ITimerEvent timerEvent = new TimerEvent(task, interval, repeatsFor, tracker);
+            ITimerTask timerEvent = new TimerTask(task, interval, repeatsFor, tracker);
 
             for (int i = 0; i < 10; i++)
             {
@@ -98,7 +98,7 @@ namespace Chronos.Tests.Core
             Action task = () => counter++;
             TimeSpan interval = TimeSpan.FromMinutes(5);
             TestTimeTracker tracker = new TestTimeTracker();
-            ITimerEvent timerEvent = new TimerEvent(task, interval, timeTracker: tracker);
+            ITimerTask timerEvent = new TimerTask(task, interval, timeTracker: tracker);
 
             for (int i = 0; i < 10; i++)
             {

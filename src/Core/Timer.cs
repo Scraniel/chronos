@@ -6,6 +6,5 @@ namespace Chronos.Core
 {
     class Timer
     {
-
     }
 }
