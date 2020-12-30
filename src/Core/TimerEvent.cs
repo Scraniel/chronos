@@ -48,7 +48,7 @@ namespace Chronos.Core
         /// <param name="task">The job to run.</param>
         /// <param name="timeUntilExecution">How long until the first execution.</param>
         /// <param name="repeatsFor">How long to repeat the task for (default is one execution).</param>
-        /// <param name="timeProvider">Optional time provider to use for guaging remaining time.</param>
+        /// <param name="timeTracker">Optional time provider to use for guaging remaining time.</param>
         public TimerEvent(Action task, TimeSpan timeUntilExecution, TimeSpan? repeatsFor = null, ITimeTracker timeTracker = null)
         {
             _task = task;
@@ -81,6 +81,11 @@ namespace Chronos.Core
 
             if (TimeUntilNextExecution < _epsilon)
             {
+                // TODO: decide how we want to deal with missing this. If we run a bit too 
+                // soon or late, this will bump the next execution up or down to maintain
+                // the average. This assumes the calling function polls this relatively 
+                // frequently.
+                //
                 TimeUntilNextExecution += ExecutionPeriod;
                 runningTask = Task.Factory.StartNew(_task);
             }
