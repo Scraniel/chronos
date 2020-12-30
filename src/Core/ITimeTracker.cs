@@ -4,8 +4,10 @@ using System.Text;
 
 namespace Chronos.Core
 {
-    class Timer
+    public interface ITimeTracker
     {
+        void Start();
 
+        TimeSpan GetTimeElapsed();
     }
 }
