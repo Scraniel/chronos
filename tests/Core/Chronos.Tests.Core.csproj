@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Chronos.Tests.Mocks\Chronos.Tests.Mocks.csproj" />
     <ProjectReference Include="..\..\src\Core\Chronos.Core.csproj" />
   </ItemGroup>
 

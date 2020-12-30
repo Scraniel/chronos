@@ -7,24 +7,6 @@ using System.Threading.Tasks;
 namespace Chronos.Core
 {
     /// <summary>
-    /// Default Tracker that just uses System time.
-    /// </summary>
-    internal class DefaultTimeTracker : ITimeTracker
-    {
-        DateTime _startTime;
-
-        public void Start()
-        {
-            _startTime = DateTime.Now;
-        }
-
-        public TimeSpan GetTimeElapsed()
-        {
-            return DateTime.Now - _startTime;
-        }
-    }
-
-    /// <summary>
     /// Represents a task that should be run at some point in the future.
     /// </summary>
     public class TimerTask : ITimerTask
@@ -58,7 +40,7 @@ namespace Chronos.Core
             TimeUntilNextExecution = timeUntilExecution;
 
             TimeUntilFinalExecution = repeatsFor ?? TimeUntilNextExecution;
-            _timeTracker = timeTracker ?? new DefaultTimeTracker();
+            _timeTracker = timeTracker ?? new SystemTimeTracker();
             _lock = new Object();
 
             _timeTracker.Start();
@@ -98,7 +80,6 @@ namespace Chronos.Core
                         TimeUntilNextExecution += ExecutionPeriod;
                         runningTask = Task.Factory.StartNew(_task);
                     }
-
                 }
             }
             finally
