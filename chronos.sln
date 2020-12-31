@@ -3,14 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29926.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chronos.Core", "src\Core\Chronos.Core.csproj", "{64F5A808-2563-48A3-9DE8-120700972444}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chronos.Timer.Core", "src\Core\Chronos.Timer.Core.csproj", "{64F5A808-2563-48A3-9DE8-120700972444}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{89536306-B4ED-4E26-B38C-197E81F0A741}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{BD4BB505-47EF-4E57-9E4A-DBC40652DA5E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chronos.Tests.Core", "tests\Core\Chronos.Tests.Core.csproj", "{6B34AC8B-0BAB-4282-8654-937B2FD08F23}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chronos.Timer.Tests.Core", "tests\Core\Chronos.Timer.Tests.Core.csproj", "{6B34AC8B-0BAB-4282-8654-937B2FD08F23}"
 EndProject
+<<<<<<< Updated upstream
+=======
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chronos.Timer.Tests.Mocks", "Chronos.Tests.Mocks\Chronos.Timer.Tests.Mocks.csproj", "{37B79322-A895-46EA-B686-6395740D0E2D}"
+EndProject
+>>>>>>> Stashed changes
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

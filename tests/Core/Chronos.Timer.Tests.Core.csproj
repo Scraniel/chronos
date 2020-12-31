@@ -12,4 +12,12 @@
     <PackageReference Include="coverlet.collector" Version="1.2.0" />
   </ItemGroup>
 
+<<<<<<< Updated upstream:tests/Core/Chronos.Tests.Core.csproj
+=======
+  <ItemGroup>
+    <ProjectReference Include="..\..\Chronos.Tests.Mocks\Chronos.Timer.Tests.Mocks.csproj" />
+    <ProjectReference Include="..\..\src\Core\Chronos.Timer.Core.csproj" />
+  </ItemGroup>
+
+>>>>>>> Stashed changes:tests/Core/Chronos.Timer.Tests.Core.csproj
 </Project>
