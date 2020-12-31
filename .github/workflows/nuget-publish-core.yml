@@ -23,4 +23,3 @@ jobs:
           PACKAGE_NAME: Chronos.Timer.Core
           # Filepath with version info, relative to root of repository & defaults to PROJECT_FILE_PATH
           VERSION_FILE_PATH: ${{ github.workspace }}/src/Core/version.txt
-          # Regex pattern to extract version info in a capturing group
