@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Core\Chronos.Core.csproj" />
+    <ProjectReference Include="..\src\Core\Chronos.Timer.Core.csproj" />
   </ItemGroup>
 
 </Project>
