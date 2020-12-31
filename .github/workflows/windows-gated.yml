@@ -1,4 +1,4 @@
-name: PR-Gate-Windows
+name: Windows-Gated
 
 on:
   push:
