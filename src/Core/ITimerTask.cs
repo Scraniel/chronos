@@ -24,6 +24,17 @@ namespace Chronos.Core
         TimeSpan TimeUntilNextExecution { get; }
 
         /// <summary>
+        /// Now many times this has been run.
+        /// </summary>
+        int NumberOfExecutions { get; }
+
+        /// <summary>
+        /// Returns true if task is ready to execute.
+        /// </summary>
+        /// <returns>True if task can execute, false otherwise.</returns>
+        bool CanExecute();
+
+        /// <summary>
         /// The actual task to run. 
         /// </summary>
         /// <returns>The currently running task.</returns>
