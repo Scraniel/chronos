@@ -7,7 +7,7 @@ namespace Chronos.Core
     /// <summary>
     /// Factory to create Timers.
     /// </summary>
-    interface ITimerFactory
+    public interface ITimerFactory
     {
         /// <summary>
         /// Creates a timer for the task using the strategy given.

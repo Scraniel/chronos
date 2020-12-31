@@ -14,7 +14,7 @@ namespace Chronos.Core
         #region private 
         private Action _task;
         private ITimeTrackingStrategy _timeTracker;
-        private Object _lock;
+        private bool _completed;
 
         // TODO: Figure out how we want to to config
         private TimeSpan _epsilon = TimeSpan.FromMilliseconds(500);
@@ -24,6 +24,8 @@ namespace Chronos.Core
         public TimeSpan TimeUntilNextExecution { get; private set; }
         public TimeSpan TimeUntilFinalExecution { get; private set; }
         public TimeSpan ExecutionPeriod { get; private set; }
+
+        public int NumberOfExecutions { get; private set; }
         #endregion
 
         /// <summary>
@@ -38,10 +40,10 @@ namespace Chronos.Core
             _task = task;
             ExecutionPeriod = timeUntilExecution;
             TimeUntilNextExecution = timeUntilExecution;
+            _completed = false;
 
             TimeUntilFinalExecution = repeatsFor ?? TimeUntilNextExecution;
             _timeTracker = timeTracker ?? new SystemTimeTracker();
-            _lock = new Object();
 
             _timeTracker.Start();
         }
@@ -52,46 +54,45 @@ namespace Chronos.Core
         /// <returns>Awaitable task running the job.</returns>
         public Task Execute()
         {
-            if (TimeUntilFinalExecution <= TimeSpan.Zero)
-            {
-                return Task.CompletedTask;
-            }
-
-            bool hasLock = false;
             Task runningTask = Task.CompletedTask;
-            try
+            if (_completed)
             {
-                Monitor.TryEnter(_lock, ref hasLock);
-                if (hasLock)
-                {
-                    // If we're close enough and final time hasn't passed, run. Otherwise, no-op.
-                    //
-                    TimeSpan elapsedTime = _timeTracker.GetTimeElapsed();
-                    TimeUntilNextExecution -= elapsedTime;
-                    TimeUntilFinalExecution -= elapsedTime;
+                return runningTask;
+            }
 
-                    if (TimeUntilNextExecution < _epsilon)
-                    {
-                        // TODO: decide how we want to deal with missing this. If we run a bit too 
-                        // soon or late, this will bump the next execution up or down to maintain
-                        // the average. This assumes the calling function polls this relatively 
-                        // frequently.
-                        //
-                        TimeUntilNextExecution += ExecutionPeriod;
-                        runningTask = Task.Factory.StartNew(_task);
-                    }
+            // If we're close enough and final time hasn't passed, run. Otherwise, no-op.
+            //
+            TimeSpan elapsedTime = _timeTracker.GetTimeElapsed();
+            TimeUntilNextExecution -= elapsedTime;
+            TimeUntilFinalExecution -= elapsedTime;
+
+            if (CanExecute())
+            {
+                // TODO: decide how we want to deal with missing this. If we run a bit too 
+                // soon or late, this will bump the next execution up or down to maintain
+                // the average. This assumes the calling function polls this relatively 
+                // frequently.
+                //
+                TimeUntilNextExecution += ExecutionPeriod;
+                runningTask = Task.Factory.StartNew(_task);
+                NumberOfExecutions++;
+
+                if(TimeUntilFinalExecution <= TimeSpan.Zero)
+                {
+                    _completed = true;
                 }
             }
-            finally
-            {
-                if(hasLock)
-                {
-                    Monitor.Exit(_lock);
-                }
-            }
-            
-
+                
             return runningTask;
+        }
+
+        /// <summary>
+        /// Whether the task can currently be executed.
+        /// </summary>
+        /// <returns>True if the task can be executed.</returns>
+        public bool CanExecute()
+        {
+            return !_completed && TimeUntilNextExecution < _epsilon;
         }
     }
 }
