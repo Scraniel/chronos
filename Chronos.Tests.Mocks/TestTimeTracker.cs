@@ -3,7 +3,7 @@ using Chronos.Core;
 
 namespace Chronos.Tests.Mocks
 {
-    public class TestTimeTracker : ITimeTracker
+    public class TestTimeTracker : ITimeTrackingStrategy
     {
         private TimeSpan _elapsed;
         private TimeSpan _timeToPassOnUpdate;

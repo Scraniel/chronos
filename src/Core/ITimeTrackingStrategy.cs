@@ -7,7 +7,7 @@ namespace Chronos.Core
     /// <summary>
     /// Provides a way to measure time elapsed.
     /// </summary>
-    public interface ITimeTracker
+    public interface ITimeTrackingStrategy
     {
         /// <summary>
         /// Initializes or resets the tracker.

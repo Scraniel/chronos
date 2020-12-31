@@ -14,7 +14,7 @@ namespace Chronos.Tests.Core
             int counter = 0;
             Action task = () => counter++;
             TimeSpan interval = TimeSpan.FromMinutes(5);
-            ITimeTracker tracker = new TestTimeTracker(interval);
+            ITimeTrackingStrategy tracker = new TestTimeTracker(interval);
             ITimerTask timerEvent = new TimerTask(task, interval, timeTracker: tracker);
 
             timerEvent.Execute().Wait();

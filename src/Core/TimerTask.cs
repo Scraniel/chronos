@@ -13,7 +13,7 @@ namespace Chronos.Core
     {
         #region private 
         private Action _task;
-        private ITimeTracker _timeTracker;
+        private ITimeTrackingStrategy _timeTracker;
         private Object _lock;
 
         // TODO: Figure out how we want to to config
@@ -33,7 +33,7 @@ namespace Chronos.Core
         /// <param name="timeUntilExecution">How long until the first execution.</param>
         /// <param name="repeatsFor">How long to repeat the task for (default is one execution).</param>
         /// <param name="timeTracker">Optional time provider to use for guaging remaining time.</param>
-        public TimerTask(Action task, TimeSpan timeUntilExecution, TimeSpan? repeatsFor = null, ITimeTracker timeTracker = null)
+        public TimerTask(Action task, TimeSpan timeUntilExecution, TimeSpan? repeatsFor = null, ITimeTrackingStrategy timeTracker = null)
         {
             _task = task;
             ExecutionPeriod = timeUntilExecution;

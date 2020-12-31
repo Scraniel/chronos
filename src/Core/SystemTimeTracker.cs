@@ -5,7 +5,7 @@ namespace Chronos.Core
     /// <summary>
     /// Default Tracker that uses System time from DateTime.
     /// </summary>
-    public class SystemTimeTracker : ITimeTracker
+    public class SystemTimeTracker : ITimeTrackingStrategy
     {
         TimeSpan _elapsed;
         DateTime _lastUpdate;
