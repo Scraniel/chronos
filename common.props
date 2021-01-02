@@ -1,0 +1,7 @@
+<Project>
+  <PropertyGroup>
+    <SrcRoot>$(MSBuildThisFileDirectory)</SrcRoot>
+    <OutputType>Library</OutputType>
+    <RootNamespace>$(AssemblyName)</RootNamespace>
+  </PropertyGroup>
+</Project>
