@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory)..\, common.props))/common.props"/>
   <ItemGroup>
-    <ProjectReference Include="$(SrcRoot)\src\Core\Chronos.Core.csproj" />
+    <ProjectReference Include="$(SrcRoot)\src\Core\Chronos.Timer.Core.csproj" />
   </ItemGroup>
 
 </Project>

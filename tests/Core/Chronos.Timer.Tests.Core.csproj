@@ -13,6 +13,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(SrcRoot)\src\Mocks\Chronos.Timer.Mocks.csproj" />
-    <ProjectReference Include="$(SrcRoot)\src\Core\Chronos.Core.csproj" />
+    <ProjectReference Include="$(SrcRoot)\src\Core\Chronos.Timer.Core.csproj" />
   </ItemGroup>
 </Project>

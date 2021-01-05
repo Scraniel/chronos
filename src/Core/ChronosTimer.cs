@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Chronos.Core
+namespace Chronos.Timer.Core
 {
     /// <summary>
     /// Holds information about a task to be run.

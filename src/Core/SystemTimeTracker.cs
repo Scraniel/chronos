@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Chronos.Core
+namespace Chronos.Timer.Core
 {
     /// <summary>
     /// Default Tracker that uses System time from DateTime.
