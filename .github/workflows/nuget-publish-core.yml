@@ -18,7 +18,7 @@ jobs:
         uses: brandedoutcast/publish-nuget@v2.5.5
         with:
           # Filepath of the project to be packaged, relative to root of repository
-          PROJECT_FILE_PATH: ${{ github.workspace }}/src/Core/Chronos.Core.csproj
+          PROJECT_FILE_PATH: ${{ github.workspace }}/src/Core/Chronos.Timer.Core.csproj
           # NuGet package id, used for version detection & defaults to project name
           PACKAGE_NAME: Chronos.Timer.Core
           # Filepath with version info, relative to root of repository & defaults to PROJECT_FILE_PATH
