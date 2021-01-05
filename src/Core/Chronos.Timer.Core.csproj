@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory)..\, common.props))/common.props"/>
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Version>0.0.1-alpha</Version>
@@ -13,7 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\..\LICENSE">
+    <None Include="$(SrcRoot)\LICENSE">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
