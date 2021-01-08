@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Chronos.Core
+namespace Chronos.Timer.Core
 {
     /// <summary>
     /// Provides a way to measure time elapsed.

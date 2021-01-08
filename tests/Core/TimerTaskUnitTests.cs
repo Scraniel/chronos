@@ -1,9 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Chronos.Core;
-using Chronos.Tests.Mocks;
+using Chronos.Timer.Core;
 using System;
+using Chronos.Timer.Mocks;
 
-namespace Chronos.Tests.Core
+namespace Chronos.Timer.Tests.Core
 {
     [TestClass]
     public class TimerTaskUnitTests

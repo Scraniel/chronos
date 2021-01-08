@@ -1,7 +1,7 @@
 ﻿using System;
-using Chronos.Core;
+using Chronos.Timer.Core;
 
-namespace Chronos.Tests.Mocks
+namespace Chronos.Timer.Mocks
 {
     public class TestTimeTracker : ITimeTrackingStrategy
     {

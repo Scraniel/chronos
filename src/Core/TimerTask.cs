@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Chronos.Core
+namespace Chronos.Timer.Core
 {
     /// <summary>
     /// Represents a task that should be run at some point in the future.

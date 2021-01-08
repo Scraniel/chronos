@@ -1,5 +1,5 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
+<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory)..\, common.props))/common.props" />
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <IsPackable>false</IsPackable>
@@ -12,7 +12,7 @@
     <PackageReference Include="coverlet.collector" Version="1.2.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Chronos.Tests.Mocks\Chronos.Timer.Tests.Mocks.csproj" />
-    <ProjectReference Include="..\..\src\Core\Chronos.Timer.Core.csproj" />
+    <ProjectReference Include="$(SrcRoot)\src\Mocks\Chronos.Timer.Mocks.csproj" />
+    <ProjectReference Include="$(SrcRoot)\src\Core\Chronos.Timer.Core.csproj" />
   </ItemGroup>
 </Project>
