@@ -14,16 +14,6 @@ namespace Chronos.Timer.Core
         TimeSpan ExecutionPeriod { get; }
 
         /// <summary>
-        /// How long until this should stop repeating.
-        /// </summary>
-        TimeSpan TimeUntilFinalExecution { get; }
-
-        /// <summary>
-        /// How long until the next time this runs.
-        /// </summary>
-        TimeSpan TimeUntilNextExecution { get; }
-
-        /// <summary>
         /// Now many times this has been run.
         /// </summary>
         int NumberOfExecutions { get; }
