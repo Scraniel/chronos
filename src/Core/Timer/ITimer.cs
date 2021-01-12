@@ -19,7 +19,7 @@ namespace Chronos.Timer.Core
         public TimeSpan TimeLeft { get; }
 
         /// <summary>
-        /// The Timer's UID used to register/unregister with the timer runtime.
+        /// The Timer's UID used to register/unregister with the Chronos timer runtime.
         /// </summary>
         internal Guid Id { get; }
 
