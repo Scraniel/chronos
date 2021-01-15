@@ -12,6 +12,13 @@
     <Description>A utility library to help manage timed event callbacks.</Description>
   </PropertyGroup>
 
+  <!-- Add InternalsVisibleTo assembly info to tests projects.-->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>$(AssemblyName).Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+  
   <ItemGroup>
     <None Include="$(SrcRoot)\LICENSE">
       <Pack>True</Pack>
