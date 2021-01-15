@@ -5,8 +5,16 @@ namespace Chronos.Timer.Core
 {
     public class TimerFactory : ITimerFactory
     {
+        public ITimer CreateTimer<TTimer>(ITimeTrackingStrategy timeTracker = null) where TTimer : ITimer
+        {
+            return CreateTimer<TTimer>(new List<ITimerTask>(), timeTracker);
+        }
+
         public ITimer CreateTimer<TTimer>(ITimerTask task, ITimeTrackingStrategy timeTracker = null) where TTimer : ITimer
         {
+            if (task == null)
+                return CreateTimer<TTimer>(timeTracker);
+
             return CreateTimer<TTimer>(new List<ITimerTask> { task }, timeTracker);
         }
 

@@ -12,6 +12,14 @@ namespace Chronos.Timer.Core
         /// <summary>
         /// Creates a timer for the task using the strategy given.
         /// </summary>
+        /// <param name="timeTracker">The time tracking strategy to use.</param>
+        /// <returns>The Timer.</returns>
+        ITimer CreateTimer<TTimer>(ITimeTrackingStrategy timeTracker = null)
+            where TTimer : ITimer;
+
+        /// <summary>
+        /// Creates a timer for the task using the strategy given.
+        /// </summary>
         /// <param name="task">The task to perform.</param>
         /// <param name="timeTracker">The time tracking strategy to use.</param>
         /// <returns>The Timer.</returns>
