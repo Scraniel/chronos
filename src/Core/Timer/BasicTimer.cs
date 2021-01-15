@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Chronos.Timer.Core
 {
+    //TODO Replace with real implementation
     public class BasicTimer : ITimer
     {
         public TimeSpan ElapsedTime => throw new NotImplementedException();
