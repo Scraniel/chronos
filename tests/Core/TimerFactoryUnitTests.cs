@@ -86,6 +86,7 @@ namespace Chronos.Timer.Tests.Core
             Assert.IsTrue(timer.Initialized);
         }
 
+        // TODO Replace with mock implementation
         private class TestTimer : ITimer
         {
             public TimeSpan ElapsedTime => throw new NotImplementedException();
