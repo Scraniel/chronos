@@ -3,7 +3,7 @@ using Chronos.Timer.Core;
 
 namespace Chronos.Timer.Mocks
 {
-    public class TestTimeTracker : ITimeTrackingStrategy
+    public class TestTimeTrackingStrategy : ITimeTrackingStrategy
     {
         private TimeSpan _elapsed;
         private TimeSpan _timeToPassOnUpdate;
@@ -13,7 +13,7 @@ namespace Chronos.Timer.Mocks
         /// Constructor - takes in the amount to pass on each call to update.
         /// </summary>
         /// <param name="timeToPassOnUpdate">How much time to simulate passing on update calls.</param>
-        public TestTimeTracker(TimeSpan timeToPassOnUpdate)
+        public TestTimeTrackingStrategy(TimeSpan timeToPassOnUpdate)
         {
             _timeToPassOnUpdate = timeToPassOnUpdate;
         }

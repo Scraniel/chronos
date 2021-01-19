@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Chronos.Timer.Core
 {
@@ -21,7 +22,7 @@ namespace Chronos.Timer.Core
         /// <summary>
         /// The Timer's UID used to register/unregister with the Chronos timer runtime.
         /// </summary>
-        internal Guid Id { get; }
+        public Guid Id { get; }
 
         /// <summary>
         /// Unpauses the timer and restarts tracking time.
@@ -54,6 +55,6 @@ namespace Chronos.Timer.Core
         /// <summary>
         /// Updates the elapsed time stored in the timer.
         /// </summary>
-        internal void Update();
+        internal Task Update();
     }
 }

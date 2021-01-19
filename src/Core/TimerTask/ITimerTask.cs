@@ -11,18 +11,22 @@ namespace Chronos.Timer.Core
         /// <summary>
         /// How often this task should run.
         /// </summary>
-        TimeSpan ExecutionPeriod { get; }
+        TimeSpan Period { get; }
 
         /// <summary>
-        /// Now many times this has been run.
+        /// How many times to run this task.
         /// </summary>
-        int NumberOfExecutions { get; }
+        int TimesToExecute { get; }
 
         /// <summary>
-        /// Returns true if task is ready to execute.
+        /// True if task can execute, false otherwise.
         /// </summary>
-        /// <returns>True if task can execute, false otherwise.</returns>
-        bool CanExecute();
+        bool CanExecute { get; }
+
+        /// <summary>
+        /// True if task is finished, false otherwise.
+        /// </summary>
+        bool IsFinished { get; }
 
         /// <summary>
         /// The actual task to run. 
