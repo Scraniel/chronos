@@ -53,7 +53,8 @@ namespace Chronos.Timer.Core
         internal void Initialize(ITimeTrackingStrategy timeTrackingStrategy, List<ITimerTask> timerTasks);
 
         /// <summary>
-        /// Updates the elapsed time stored in the timer.
+        /// Updates the elapsed time stored in the timer one step forward in time as dictated by its 
+        /// TimeTrackingStrategyand and runs tasks if enough time has passed.
         /// </summary>
         internal Task Update();
     }

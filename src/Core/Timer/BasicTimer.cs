@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,11 +24,22 @@ namespace Chronos.Timer.Core.Timer
             Id = Guid.NewGuid();
             foreach(ITimerTask timerTask in timerTasks)
             {
+                // TODO: consider enforcing minimum period.
+                //
                 _timerTasks.Add(timerTask.Period, timerTask);
             }
 
             _timeTrackingStrategy = timeTrackingStrategy;
         }
+
+        /// <summary>
+        /// Schedules tasks based on ideal timings. For example, if a task has a period of
+        /// 1s but doesn't get run until T = 1.1s, the next schedule will be
+        /// for T = 2s rather than 2.1s.  
+        /// 
+        /// Maintains a list of currently running tasks to potentially be cancelled later.
+        /// </summary>
+        /// <returns>Awaitable list of tasks running during this update.</returns>
         async Task ITimer.Update()
         {
             _timeTrackingStrategy.Update();
@@ -67,8 +76,8 @@ namespace Chronos.Timer.Core.Timer
 
                 _timerTasks.RemoveAt(0);
 
-                // NOTE: We should think about this. elapsed + period means that:  If a task 
-                // is run early/late, it's next scheduled time also will. This could lead to 
+                // NOTE: A subtle change here to elapsed + period would mean if a task was 
+                // run early/late, it's next scheduled time would also be. This could lead to 
                 // drifting if it happens multiple times.
                 //
                 // nextTime + period will mean things are always scheduled for when they're
@@ -78,9 +87,14 @@ namespace Chronos.Timer.Core.Timer
                 nextTime = _timerTasks.Keys[0];
             }
 
-            foreach (KeyValuePair<TimeSpan, ITimerTask> pair in toAdd)
+            foreach (KeyValuePair<TimeSpan, ITimerTask> newTask in toAdd)
             {
-                _timerTasks.Add(pair.Key, pair.Value);
+                if (newTask.Value.IsFinished)
+                {
+                    continue;
+                }
+
+                _timerTasks.Add(newTask.Key, newTask.Value);
             }
 
             await Task.WhenAll(runningTasks);            
@@ -90,7 +104,6 @@ namespace Chronos.Timer.Core.Timer
         {
             _timeTrackingStrategy.Clear();
         }
-
         public bool IsStopped()
         {
             return _timeTrackingStrategy.IsStopped();
