@@ -13,6 +13,10 @@ namespace Chronos.Timer.Core.Timer
         private ITimeTrackingStrategy _timeTrackingStrategy;
         private Dictionary<int, Task> _currentlyRunning;
         private int _taskCounter = 0;
+
+        // TODO: Decide how to handle config values
+        //
+        private TimeSpan _epsilon = TimeSpan.FromMilliseconds(100);
         #endregion
         public TimeSpan ElapsedTime => throw new NotImplementedException();
         public TimeSpan TimeLeft => throw new NotImplementedException();
@@ -31,11 +35,18 @@ namespace Chronos.Timer.Core.Timer
 
             _timeTrackingStrategy = timeTrackingStrategy;
         }
+        public BasicTimer()
+        {
+            _timerTasks = new SortedList<TimeSpan, ITimerTask>();
+            _currentlyRunning = new Dictionary<int, Task>();
+            _timeTrackingStrategy = null;
+        }
 
         /// <summary>
         /// Schedules tasks based on ideal timings. For example, if a task has a period of
-        /// 1s but doesn't get run until T = 1.1s, the next schedule will be
-        /// for T = 2s rather than 2.1s.  
+        /// 1s but doesn't get run until T = 1.1s, the next schedule will be for T = 2s 
+        /// rather than 2.1s. Likewise for T = 0.9: second execution would be for T = 2s 
+        /// rather than 1.9.
         /// 
         /// Maintains a list of currently running tasks to potentially be cancelled later.
         /// </summary>
@@ -51,10 +62,14 @@ namespace Chronos.Timer.Core.Timer
             List<KeyValuePair<TimeSpan, ITimerTask>> toAdd = null;
             List<Task> runningTasks = null;
 
-            // NOTE: This works under the assumption we only want tasks to be able to be
+            // NOTES: This works under the assumption we only want tasks to be able to be
             // run once per update loop.
             //
-            while (nextTime <= elapsed)
+            // Also, epsilon values allow for things to be run prior to their scheduled time.
+            // This value is intended to be very small and is meant to avoid tasks having
+            // to wait an entire update loop to run.
+            //
+            while (nextTime <= elapsed + _epsilon)
             {
                 if(toAdd == null)
                 {
