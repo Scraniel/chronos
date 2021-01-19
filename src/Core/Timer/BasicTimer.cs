@@ -53,6 +53,14 @@ namespace Chronos.Timer.Core.Timer
         /// <returns>Awaitable list of tasks running during this update.</returns>
         async Task ITimer.Update()
         {
+            if(_timerTasks.Count == 0)
+            {
+                // TODO: Should we throw? Probably shouldn't have dangling Timers
+                //
+                await Task.CompletedTask;
+                return;
+            }
+
             _timeTrackingStrategy.Update();
             TimeSpan elapsed = _timeTrackingStrategy.GetTimeElapsed();
             TimeSpan nextTime = _timerTasks.Keys[0];
