@@ -13,7 +13,15 @@ namespace Chronos.Timer.Core
         /// <returns>A registered timer.</returns>
         ITimer Register(TimeSpan timeUntilExecution, Action actionToExecute);
 
+        /// <summary>
+        /// Registers a timer with the timer runtime.
+        /// </summary>
+        /// <param name="timeUntilExecution">The amount of time before the given action will be executed.</param>
+        /// <param name="actionToExecute">The action to execute.</param>
+        /// <param name="strategy">The strategy providing the time.</param>
+        /// <returns>A registered timer.</returns>
         ITimer Register(TimeSpan timeUntilExecution, Action actionToExecute, ITimeTrackingStrategy strategy);
+
         ITimer Register<T>(TimeSpan timeUntilExecution, Action actionToExecute, ITimeTrackingStrategy strategy, ITimerFactory timerFactory)
             where T : ITimer;
         ITimer Register(ITimeTrackingStrategy strategy, ITimerTask actionToExecute);
