@@ -18,7 +18,7 @@ namespace Chronos.Timer.Tests.Core
         [TestMethod]
         public void CreateTimer_TimeTrackingIsNull_CreatesValidNewTimer()
         {
-            TestTimer timer = _target.CreateTimer<TestTimer>() as TestTimer;
+            TestTimer timer = _target.CreateTimer<TestTimer>();
 
             AssertValidCreation(timer);
             Assert.IsNull(timer.TimeTrackingStrategy);
@@ -37,7 +37,7 @@ namespace Chronos.Timer.Tests.Core
         [TestMethod]
         public void CreateTimer_SystemTimeTracking_CreatesValidNewTimer()
         {
-            TestTimer timer = _target.CreateTimer<TestTimer>(new SystemTimeTracker()) as TestTimer;
+            TestTimer timer = _target.CreateTimer<TestTimer>(new SystemTimeTracker());
 
             AssertValidCreation(timer);
             Assert.IsInstanceOfType(timer.TimeTrackingStrategy, typeof(SystemTimeTracker));
@@ -46,7 +46,7 @@ namespace Chronos.Timer.Tests.Core
         [TestMethod]
         public void CreateTimer_NullTimerTask_CreatesValidNewTimer()
         {
-            TestTimer timer = _target.CreateTimer<TestTimer>(new SystemTimeTracker()) as TestTimer;
+            TestTimer timer = _target.CreateTimer<TestTimer>(new SystemTimeTracker());
 
             AssertValidCreation(timer);
             Assert.AreEqual(0, timer.Tasks.Count);
@@ -57,7 +57,7 @@ namespace Chronos.Timer.Tests.Core
         {
             TestTimer timer = _target.CreateTimer<TestTimer>(
                 new TimerTask(() => { }, TimeSpan.FromSeconds(1)),
-                new SystemTimeTracker()) as TestTimer;
+                new SystemTimeTracker());
 
             AssertValidCreation(timer);
             Assert.AreEqual(1, timer.Tasks.Count);
@@ -74,7 +74,7 @@ namespace Chronos.Timer.Tests.Core
 
             TestTimer timer = _target.CreateTimer<TestTimer>(
                 tasks,
-                new SystemTimeTracker()) as TestTimer;
+                new SystemTimeTracker());
 
             AssertValidCreation(timer);
             Assert.AreEqual(2, timer.Tasks.Count);
