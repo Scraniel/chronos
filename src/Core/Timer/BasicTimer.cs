@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,7 +10,7 @@ namespace Chronos.Timer.Core.Timer
     {
         #region private
         
-        private SortedList<TimeSpan, ITimerTask> _timerTasks;
+        private List<KeyValuePair<TimeSpan, ITimerTask>> _timerTasks;
         private ITimeTrackingStrategy _timeTrackingStrategy;
         private Dictionary<int, Task> _currentlyRunning;
         private int _taskCounter = 0;
@@ -17,9 +18,17 @@ namespace Chronos.Timer.Core.Timer
         // TODO: Decide how to handle config values
         //
         private TimeSpan _epsilon = TimeSpan.FromMilliseconds(100);
+        private TimeSpan MaxTimespan(TimeSpan first, TimeSpan second)
+        {
+            return first > second ? first : second;
+        }
+        private int CompareByStartTime(KeyValuePair<TimeSpan, ITimerTask> first, KeyValuePair<TimeSpan, ITimerTask> second)
+        {
+            return first.Key.CompareTo(second.Key);
+        }
         #endregion
-        public TimeSpan ElapsedTime => throw new NotImplementedException();
-        public TimeSpan TimeLeft => throw new NotImplementedException();
+        public TimeSpan ElapsedTime { get; private set; }
+        public TimeSpan TimeLeft { get; private set; }
         public Guid Id { get; private set; }
 
         #region Explicitly implemented internal
@@ -30,17 +39,33 @@ namespace Chronos.Timer.Core.Timer
             {
                 // TODO: consider enforcing minimum period.
                 //
-                _timerTasks.Add(timerTask.Period, timerTask);
+                _timerTasks.Add(new KeyValuePair<TimeSpan, ITimerTask>(timerTask.Period, timerTask));
             }
 
+            _timerTasks.Sort(CompareByStartTime);
             _timeTrackingStrategy = timeTrackingStrategy;
         }
         public BasicTimer()
         {
-            _timerTasks = new SortedList<TimeSpan, ITimerTask>();
+            _timerTasks = new List<KeyValuePair<TimeSpan, ITimerTask>>();
             _currentlyRunning = new Dictionary<int, Task>();
             _timeTrackingStrategy = null;
         }
+
+        /// <summary>
+        /// Stores the task in a list while it's running and removes it once it's done.
+        /// </summary>
+        /// <param name="taskToRun">The task to execute asynchronously.</param>
+        /// <returns>The running task.</returns>
+        async Task SaveAndRunAsync(ITimerTask taskToRun)
+        {
+            int id = Interlocked.Increment(ref _taskCounter);
+            Task runningTask = taskToRun.ExecuteAsync();
+            _currentlyRunning.Add(id, runningTask);
+            await runningTask;
+            _currentlyRunning.Remove(id);
+        }
+
 
         /// <summary>
         /// Schedules tasks based on ideal timings. For example, if a task has a period of
@@ -51,24 +76,26 @@ namespace Chronos.Timer.Core.Timer
         /// Maintains a list of currently running tasks to potentially be cancelled later.
         /// </summary>
         /// <returns>Awaitable list of tasks running during this update.</returns>
-        async Task ITimer.Update()
+        async Task ITimer.UpdateAsync()
         {
-            if(_timerTasks.Count == 0)
+            if (_timerTasks.Count == 0)
             {
-                // TODO: Should we throw? Probably shouldn't have dangling Timers
-                //
-                await Task.CompletedTask;
-                return;
+                throw new InvalidOperationException("Empty Timers cannot be updated.");
             }
 
             _timeTrackingStrategy.Update();
-            TimeSpan elapsed = _timeTrackingStrategy.GetTimeElapsed();
-            TimeSpan nextTime = _timerTasks.Keys[0];
+            ElapsedTime = _timeTrackingStrategy.GetTimeElapsed();
 
-            // Avoid creating on every update, as this might be happening very frequently.
-            //
-            List<KeyValuePair<TimeSpan, ITimerTask>> toAdd = null;
-            List<Task> runningTasks = null;
+            TimeSpan nextTime = _timerTasks[0].Key;
+            TimeLeft = MaxTimespan(TimeSpan.Zero, nextTime - _epsilon - ElapsedTime);
+
+            if(TimeLeft > TimeSpan.Zero)
+            {
+                return;
+            }
+            
+            List<KeyValuePair<TimeSpan, ITimerTask>> toAdd = new List<KeyValuePair<TimeSpan, ITimerTask>>();
+            List<Task> runningTasks = new List<Task>();
 
             // NOTES: This works under the assumption we only want tasks to be able to be
             // run once per update loop.
@@ -77,26 +104,10 @@ namespace Chronos.Timer.Core.Timer
             // This value is intended to be very small and is meant to avoid tasks having
             // to wait an entire update loop to run.
             //
-            while (nextTime <= elapsed + _epsilon)
+            while (TimeLeft == TimeSpan.Zero)
             {
-                if(toAdd == null)
-                {
-                    toAdd = new List<KeyValuePair<TimeSpan, ITimerTask>>();
-                    runningTasks = new List<Task>();
-                }
-
-                ITimerTask taskToRun = _timerTasks.Values[0];
-                Action saveAndRun = async () =>
-                {
-                    int id = Interlocked.Increment(ref _taskCounter);
-                    Task runningTask = taskToRun.Execute();
-                    _currentlyRunning.Add(id, runningTask);
-                    await runningTask;
-                    _currentlyRunning.Remove(id);
-                };
-
-                runningTasks.Add(Task.Run(saveAndRun));
-
+                ITimerTask taskToRun = _timerTasks[0].Value;
+                runningTasks.Add(SaveAndRunAsync(taskToRun));
                 _timerTasks.RemoveAt(0);
 
                 // NOTE: A subtle change here to elapsed + period would mean if a task was 
@@ -107,7 +118,18 @@ namespace Chronos.Timer.Core.Timer
                 // *supposed* to have been run given it always runs on time.
                 //
                 toAdd.Add(KeyValuePair.Create(nextTime + taskToRun.Period, taskToRun));
-                nextTime = _timerTasks.Keys[0];
+
+                if(_timerTasks.Count > 0)
+                {
+                    nextTime = _timerTasks[0].Key;
+                    TimeLeft = MaxTimespan(TimeSpan.Zero, nextTime - _epsilon - ElapsedTime);
+                }
+                else
+                {
+                    // TODO: This probably isn't the best way to do this.
+                    //
+                    TimeLeft = TimeSpan.MaxValue;
+                }
             }
 
             foreach (KeyValuePair<TimeSpan, ITimerTask> newTask in toAdd)
@@ -117,8 +139,14 @@ namespace Chronos.Timer.Core.Timer
                     continue;
                 }
 
-                _timerTasks.Add(newTask.Key, newTask.Value);
+                _timerTasks.Add(new KeyValuePair<TimeSpan, ITimerTask>(newTask.Key, newTask.Value));
             }
+
+            // TODO: If performance becomes an issue, we should replace the list with a heap or actual pqueue.
+            // SortedList doesn't allow for duplicates, and storing lists of tasks for a given timestamp will
+            // introduce a lot of unnecessary overhead.
+            //
+            _timerTasks.Sort(CompareByStartTime);
 
             await Task.WhenAll(runningTasks);            
         }
@@ -126,8 +154,15 @@ namespace Chronos.Timer.Core.Timer
         public void Clear()
         {
             _timeTrackingStrategy.Clear();
+            ElapsedTime = TimeSpan.Zero;
+            List<KeyValuePair<TimeSpan, ITimerTask>> listCopy = _timerTasks.ToList();
+            _timerTasks.Clear();
+            foreach (var pair in listCopy)
+            {
+                _timerTasks.Add(new KeyValuePair<TimeSpan, ITimerTask>(pair.Value.Period, pair.Value));
+            }
         }
-        public bool IsStopped()
+        public bool IsPaused()
         {
             return _timeTrackingStrategy.IsStopped();
         }

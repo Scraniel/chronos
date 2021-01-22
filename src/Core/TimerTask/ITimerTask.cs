@@ -32,6 +32,6 @@ namespace Chronos.Timer.Core
         /// The actual task to run. 
         /// </summary>
         /// <returns>The currently running task.</returns>
-        Task Execute();
+        Task ExecuteAsync();
     }
 }

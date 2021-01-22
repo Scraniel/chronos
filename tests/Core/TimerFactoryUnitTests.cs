@@ -107,7 +107,7 @@ namespace Chronos.Timer.Tests.Core
                 throw new NotImplementedException();
             }
 
-            public bool IsStopped()
+            public bool IsPaused()
             {
                 throw new NotImplementedException();
             }
@@ -128,7 +128,7 @@ namespace Chronos.Timer.Tests.Core
                 TimeTrackingStrategy = timeTrackingStrategy;
                 Tasks = timerTasks;
             }
-            Task ITimer.Update()
+            Task ITimer.UpdateAsync()
             {
                 throw new NotImplementedException();
             }

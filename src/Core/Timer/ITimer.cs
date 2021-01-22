@@ -38,7 +38,7 @@ namespace Chronos.Timer.Core
         /// Returns true if the tracker is not running.
         /// </summary>
         /// <returns></returns>
-        public bool IsStopped();
+        public bool IsPaused();
 
         /// <summary>
         /// Wipes the elapsed time stored in the tracker. Does not pause the timer.
@@ -56,6 +56,6 @@ namespace Chronos.Timer.Core
         /// Updates the elapsed time stored in the timer one step forward in time as dictated by its 
         /// TimeTrackingStrategyand and runs tasks if enough time has passed.
         /// </summary>
-        internal Task Update();
+        internal Task UpdateAsync();
     }
 }

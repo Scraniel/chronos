@@ -16,7 +16,7 @@ namespace Chronos.Timer.Tests.Core
             TimeSpan interval = TimeSpan.FromMinutes(5);
             ITimerTask timerEvent = new BasicTimerTask(task, interval, 5);
 
-            timerEvent.Execute().Wait();
+            timerEvent.ExecuteAsync().Wait();
             Assert.AreEqual(1, counter);
             Assert.AreEqual(4, timerEvent.TimesToExecute);
             Assert.AreEqual(false, timerEvent.IsFinished);
@@ -32,7 +32,7 @@ namespace Chronos.Timer.Tests.Core
 
             for(int i = 0; i < 5; i++)
             {
-                timerEvent.Execute().Wait();
+                timerEvent.ExecuteAsync().Wait();
                 Assert.AreEqual(1, counter);
                 Assert.AreEqual(0, timerEvent.TimesToExecute);
             }
@@ -54,7 +54,7 @@ namespace Chronos.Timer.Tests.Core
             Action task = () => { };
             TimeSpan interval = TimeSpan.FromMinutes(5);
             ITimerTask timerEvent = new BasicTimerTask(task, interval, 1);
-            timerEvent.Execute().Wait();
+            timerEvent.ExecuteAsync().Wait();
 
             Assert.AreEqual(false, timerEvent.CanExecute);
         }
@@ -90,7 +90,7 @@ namespace Chronos.Timer.Tests.Core
             TimeSpan interval = TimeSpan.FromMinutes(5);
             ITimeTrackingStrategy tracker = new TestTimeTrackingStrategy(interval);
             ITimerTask timerEvent = new BasicTimerTask(task, interval, 1);
-            timerEvent.Execute().Wait();
+            timerEvent.ExecuteAsync().Wait();
 
             Assert.AreEqual(true, timerEvent.IsFinished);
         }

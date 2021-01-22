@@ -38,16 +38,16 @@ namespace Chronos.Timer.Core
         /// <param name="numTimesToRun">How long to repeat the task for (default is one execution).</param>
         public BasicTimerTask(Action task, TimeSpan period, int numTimesToRun)
         {
-            if(numTimesToRun == 0)
+            if(numTimesToRun <= 0)
             {
-                throw new ArgumentOutOfRangeException("numTimesToRun");
+                throw new ArgumentOutOfRangeException(nameof(numTimesToRun), numTimesToRun, "Value must be greater than 0.");
             }
 
             _task = task;
             _finished = false;
             TimesToExecute = numTimesToRun;
         }
-        public async Task Execute()
+        public async Task ExecuteAsync()
         {
             if (!CanExecute)
             {
