@@ -29,35 +29,34 @@ namespace Chronos.Timer.Core.Runtime
         public T Register<T>(TimeSpan timeUntilExecution, Action actionToExecute)
             where T : ITimer
         {
-            return Register<T>(_timerFactory.CreateTimer<T>(new TimerTask(actionToExecute, timeUntilExecution)));
+            return Register(_timerFactory.CreateTimer<T>(new TimerTask(actionToExecute, timeUntilExecution)));
         }
 
         public T Register<T>(TimeSpan timeUntilExecution, Action actionToExecute, ITimeTrackingStrategy strategy)
             where T : ITimer
         {
-            return Register<T>(_timerFactory.CreateTimer<T>(actionToExecute, timeUntilExecution, strategy));
+            return Register(_timerFactory.CreateTimer<T>(new TimerTask(actionToExecute, timeUntilExecution), strategy));
         }
 
         public T Register<T>(TimeSpan timeUntilExecution, Action actionToExecute, ITimeTrackingStrategy strategy, ITimerFactory timerFactory) where T : ITimer
         {
-            return Register<T>(timerFactory.CreateTimer<T>(actionToExecute, timeUntilExecution, strategy));
+            return Register(timerFactory.CreateTimer<T>(new TimerTask(actionToExecute, timeUntilExecution), strategy));
         }
 
         public T Register<T>(ITimeTrackingStrategy strategy, ITimerTask actionToExecute)
             where T : ITimer
         {
-            return Register<T>(_timerFactory.CreateTimer<T>(actionToExecute, strategy));
+            return Register(_timerFactory.CreateTimer<T>(actionToExecute, strategy));
         }
 
         public T Register<T>(ITimeTrackingStrategy strategy, ITimerTask actionToExecute, ITimerFactory timerFactory) where T : ITimer
         {
-            return Register<T>(timerFactory.CreateTimer<T>(actionToExecute, timeUntilExecution, strategy));
+            return Register(timerFactory.CreateTimer<T>(actionToExecute, strategy));
         }
 
         public T Register<T>(ITimeTrackingStrategy strategy, IEnumerable<ITimerTask> actionsToExecute, ITimerFactory timerFactory) where T : ITimer
         {
-            return Register<T>(timerFactory.CreateTimer<T>(actionToExecute, timeUntilExecution, strategy));
-            throw new NotImplementedException();
+            return Register(timerFactory.CreateTimer<T>(actionsToExecute, strategy));
         }
 
         public T Register<T>(T timer) where T : ITimer
