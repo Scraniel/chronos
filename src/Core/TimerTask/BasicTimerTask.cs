@@ -51,7 +51,6 @@ namespace Chronos.Timer.Core
         {
             if (!CanExecute)
             {
-                await Task.CompletedTask;
                 return;
             }
 
