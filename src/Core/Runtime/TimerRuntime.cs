@@ -8,7 +8,7 @@ namespace Chronos.Timer.Core.Runtime
     public class TimerRuntime : ITimerRuntime
     {
 
-        private List<ITimer> _timers = new List<ITimer>();
+        private Dictionary<Guid, ITimer> _timers = new Dictionary<Guid, ITimer>();
         private bool _isPaused = false;
         private Task _bleh;
 
@@ -63,12 +63,18 @@ namespace Chronos.Timer.Core.Runtime
 
         public void Unregister(ITimer timer)
         {
-            throw new NotImplementedException();
+            if (timer == null)
+            {
+                throw new ArgumentNullException(nameof(timer));
+            }
+
+            Unregister(timer.Id);
         }
 
         public void Unregister(Guid timerId)
         {
-            throw new NotImplementedException();
+            if (_timers.ContainsKey(timerId))
+                _timers.Remove(timerId); 
         }
 
         private void Update()
