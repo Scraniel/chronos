@@ -8,39 +8,39 @@ namespace Chronos.Timer.Core
         /// <summary>
         /// Creates a timer for the task using the strategy given.
         /// </summary>
-        /// <typeparam name="TTimer">The type of timer to create.</typeparam>
+        /// <typeparam name="T">The type of timer to create.</typeparam>
         /// <param name="timeTracker">The strategy which will provide the elapsed time.</param>
         /// <returns>A new ITimer.</returns>
-        public ITimer CreateTimer<TTimer>(ITimeTrackingStrategy timeTracker = null) where TTimer : ITimer
+        public T CreateTimer<T>(ITimeTrackingStrategy timeTracker = null) where T : ITimer
         {
-            return CreateTimer<TTimer>(new List<ITimerTask>(), timeTracker);
+            return CreateTimer<T>(new List<ITimerTask>(), timeTracker);
         }
 
         /// <summary>
         /// Creates a timer for the task using the strategy given.
         /// </summary>
-        /// <typeparam name="TTimer">The type of timer to create.</typeparam>
+        /// <typeparam name="T">The type of timer to create.</typeparam>
         /// <param name="task">The task to perform.</param>
         /// <param name="timeTracker">The strategy which will provide the elapsed time.</param>
         /// <returns>A new ITimer.</returns>
-        public ITimer CreateTimer<TTimer>(ITimerTask task, ITimeTrackingStrategy timeTracker = null) where TTimer : ITimer
+        public T CreateTimer<T>(ITimerTask task, ITimeTrackingStrategy timeTracker = null) where T : ITimer
         {
             if (task == null)
-                return CreateTimer<TTimer>(timeTracker);
+                return CreateTimer<T>(timeTracker);
 
-            return CreateTimer<TTimer>(new List<ITimerTask> { task }, timeTracker);
+            return CreateTimer<T>(new List<ITimerTask> { task }, timeTracker);
         }
 
         /// <summary>
         /// Creates a timer for the list of tasks using the strategy given.
         /// </summary>
-        /// <typeparam name="TTimer">The type of timer to create.</typeparam>
+        /// <typeparam name="T">The type of timer to create.</typeparam>
         /// <param name="tasks">The list of tasks to perform.</param>
         /// <param name="timeTracker">The strategy which will provide the elapsed time.</param>
         /// <returns>A new ITimer.</returns>
-        public ITimer CreateTimer<TTimer>(List<ITimerTask> tasks, ITimeTrackingStrategy timeTracker = null) where TTimer : ITimer
+        public T CreateTimer<T>(List<ITimerTask> tasks, ITimeTrackingStrategy timeTracker = null) where T : ITimer
         {
-            TTimer timer = (TTimer)Activator.CreateInstance(typeof(TTimer));
+            T timer = (T)Activator.CreateInstance(typeof(T));
             timer.Initialize(timeTracker, tasks);
             return timer;
         }
