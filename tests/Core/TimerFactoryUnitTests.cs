@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Chronos.Timer.Tests.Core
 {
@@ -9,47 +10,40 @@ namespace Chronos.Timer.Tests.Core
     public class TimerFactoryUnitTests
     {
         private readonly TimerFactory _target;
-
+        private readonly TimerTask _timerTask;
         public TimerFactoryUnitTests()
         {
             _target = new TimerFactory();
-        }
-
-        [TestMethod]
-        public void CreateTimer_TimeTrackingIsNull_CreatesValidNewTimer()
-        {
-            TestTimer timer = _target.CreateTimer<TestTimer>();
-
-            AssertValidCreation(timer);
-            Assert.IsNull(timer.TimeTrackingStrategy);
-            Assert.AreEqual(0, timer.Tasks.Count);
+            _timerTask = new TimerTask(() => { }, TimeSpan.FromSeconds(1));
         }
 
         [TestMethod]
         public void CreateTimer_CreateTwoTimer_CreatesDifferentTimers()
         {
-            ITimer timer1 = _target.CreateTimer<TestTimer>();
-            ITimer timer2 = _target.CreateTimer<TestTimer>();
+            ITimer timer1 = _target.CreateTimer<TestTimer>(_timerTask);
+            ITimer timer2 = _target.CreateTimer<TestTimer>(_timerTask);
 
             Assert.AreNotEqual(timer1, timer2);
         }
 
         [TestMethod]
-        public void CreateTimer_SystemTimeTracking_CreatesValidNewTimer()
+        public void CreateTimer_WithSystemTimeTracking_CreatesValidNewTimer()
         {
-            TestTimer timer = _target.CreateTimer<TestTimer>(new SystemTimeTracker());
+            TestTimer timer = _target.CreateTimer<TestTimer>(_timerTask, new SystemTimeTracker());
 
             AssertValidCreation(timer);
             Assert.IsInstanceOfType(timer.TimeTrackingStrategy, typeof(SystemTimeTracker));
         }
 
         [TestMethod]
-        public void CreateTimer_NullTimerTask_CreatesValidNewTimer()
+        public void CreateTimer_NullTimerTask_ThrowsArgumentNullException()
         {
-            TestTimer timer = _target.CreateTimer<TestTimer>(new SystemTimeTracker());
-
-            AssertValidCreation(timer);
-            Assert.AreEqual(0, timer.Tasks.Count);
+            Assert.ThrowsException<ArgumentNullException>(() =>
+                {
+                    _target.CreateTimer<TestTimer>(
+                        task: null,
+                        timeTracker: null);
+                });
         }
 
         [TestMethod]
@@ -121,11 +115,11 @@ namespace Chronos.Timer.Tests.Core
                 throw new NotImplementedException();
             }
 
-            void ITimer.Initialize(ITimeTrackingStrategy timeTrackingStrategy, List<ITimerTask> timerTasks)
+            void ITimer.Initialize(ITimeTrackingStrategy timeTrackingStrategy, IEnumerable<ITimerTask> timerTasks)
             {
                 Initialized = true;
                 TimeTrackingStrategy = timeTrackingStrategy;
-                Tasks = timerTasks;
+                Tasks = timerTasks.ToList();
             }
 
             void ITimer.Update()
