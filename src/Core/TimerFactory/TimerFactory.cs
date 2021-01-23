@@ -14,7 +14,7 @@ namespace Chronos.Timer.Core
         /// <returns>A new ITimer.</returns>
         public T CreateTimer<T>(ITimerTask task, ITimeTrackingStrategy timeTracker = null) where T : ITimer
         {
-            Guards.ArgumentNotNull(task, nameof(task));
+            task = task ?? throw new ArgumentNullException(nameof(task));
             return CreateTimer<T>(new List<ITimerTask> { task }, timeTracker);
         }
 
