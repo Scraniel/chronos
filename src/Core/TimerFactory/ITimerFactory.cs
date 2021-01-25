@@ -12,14 +12,6 @@ namespace Chronos.Timer.Core
         /// <summary>
         /// Creates a timer for the task using the strategy given.
         /// </summary>
-        /// <param name="timeTracker">The strategy which will provide the elapsed time.</param>
-        /// <returns>A new ITimer.</returns>
-        T CreateTimer<T>(ITimeTrackingStrategy timeTracker = null)
-            where T : ITimer;
-
-        /// <summary>
-        /// Creates a timer for the task using the strategy given.
-        /// </summary>
         /// <param name="task">The task to perform.</param>
         /// <param name="timeTracker">The strategy which will provide the elapsed time.</param>
         /// <returns>A new ITimer.</returns>
@@ -32,7 +24,7 @@ namespace Chronos.Timer.Core
         /// <param name="tasks">The list of tasks to perform.</param>
         /// <param name="timeTracker">The strategy which will provide the elapsed time.</param>
         /// <returns>A new ITimer</returns>
-        T CreateTimer<T>(List<ITimerAction> tasks, ITimeTrackingStrategy timeTracker = null)
+        T CreateTimer<T>(IEnumerable<ITimerAction> tasks, ITimeTrackingStrategy timeTracker = null)
             where T : ITimer;
     }
 }

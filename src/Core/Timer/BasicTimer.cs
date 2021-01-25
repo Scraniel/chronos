@@ -21,7 +21,7 @@ namespace Chronos.Timer.Core
         }
 
         #region Explicitly implemented internal
-        void ITimer.Initialize(ITimeTrackingStrategy timeTrackingStrategy, List<ITimerAction> timerTasks)
+        void ITimer.Initialize(ITimeTrackingStrategy timeTrackingStrategy, IEnumerable<ITimerAction> timerTasks)
         {
             // TODO: consider enforcing minimum period.
             //
