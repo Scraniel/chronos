@@ -32,8 +32,9 @@ namespace Chronos.Timer.Core
             throw new NotImplementedException();
         }
 
-        void ITimer.Initialize(ITimeTrackingStrategy timeTrackingStrategy, List<ITimerTask> timerTasks)
+        void ITimer.Initialize(ITimeTrackingStrategy timeTrackingStrategy, IEnumerable<ITimerTask> timerTasks)
         {
+            throw new NotImplementedException();
         }
 
         void ITimer.Update()
