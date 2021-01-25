@@ -36,6 +36,7 @@ namespace Chronos.Timer.Core
         /// <param name="task">The job to run.</param>
         /// <param name="period">How long until the first and subsequent executions.</param>
         /// <param name="numTimesToRun">How long to repeat the task for (default is one execution).</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if numTimesToRun is <= 0.</exception>
         public BasicTimerAction(Action task, TimeSpan period, int numTimesToRun)
         {
             if(numTimesToRun <= 0)

@@ -12,11 +12,17 @@ namespace Chronos.Timer.Core
         public TimeSpan TimeLeft { get; private set; }
         public Guid Id { get; private set; }
 
+        public BasicTimer()
+        {
+            Id = Guid.NewGuid();
+            _timerTasks = new List<KeyValuePair<TimeSpan, ITimerAction>>();
+            _currentlyRunning = new Dictionary<int, Task>();
+            _timeTrackingStrategy = null;
+        }
+
         #region Explicitly implemented internal
         void ITimer.Initialize(ITimeTrackingStrategy timeTrackingStrategy, List<ITimerAction> timerTasks)
         {
-            Id = Guid.NewGuid();
-
             // TODO: consider enforcing minimum period.
             //
             _timerTasks = timerTasks
@@ -25,27 +31,6 @@ namespace Chronos.Timer.Core
             _timerTasks.Sort(CompareByStartTime);
             _timeTrackingStrategy = timeTrackingStrategy;
         }
-        public BasicTimer()
-        {
-            _timerTasks = new List<KeyValuePair<TimeSpan, ITimerAction>>();
-            _currentlyRunning = new Dictionary<int, Task>();
-            _timeTrackingStrategy = null;
-        }
-
-        /// <summary>
-        /// Stores the task in a list while it's running and removes it once it's done.
-        /// </summary>
-        /// <param name="taskToRun">The task to execute asynchronously.</param>
-        /// <returns>The running task.</returns>
-        async Task SaveAndRunAsync(ITimerAction taskToRun)
-        {
-            int id = Interlocked.Increment(ref _taskCounter);
-            Task runningTask = taskToRun.ExecuteAsync();
-            _currentlyRunning.Add(id, runningTask);
-            await runningTask.ConfigureAwait(false);
-            _currentlyRunning.Remove(id);
-        }
-
 
         /// <summary>
         /// Schedules tasks based on ideal timings. For example, if a task has a period of
@@ -70,11 +55,11 @@ namespace Chronos.Timer.Core
             TimeSpan nextTime = _timerTasks[0].Key;
             TimeLeft = MaxTimespan(TimeSpan.Zero, nextTime - _epsilon - ElapsedTime);
 
-            if(TimeLeft > TimeSpan.Zero)
+            if (TimeLeft > TimeSpan.Zero)
             {
                 return;
             }
-            
+
             List<KeyValuePair<TimeSpan, ITimerAction>> toAdd = new List<KeyValuePair<TimeSpan, ITimerAction>>();
             List<Task> runningTasks = new List<Task>();
 
@@ -101,12 +86,12 @@ namespace Chronos.Timer.Core
                 // nextTime + period will mean things are always scheduled for when they're
                 // *supposed* to have been run given it always runs on time.
                 //
-                if(!taskToRun.IsFinished)
+                if (!taskToRun.IsFinished)
                 {
                     toAdd.Add(KeyValuePair.Create(nextTime + taskToRun.Period, taskToRun));
                 }
 
-                if(_timerTasks.Count > 0)
+                if (_timerTasks.Count > 0)
                 {
                     nextTime = _timerTasks[0].Key;
                     TimeLeft = MaxTimespan(TimeSpan.Zero, nextTime - _epsilon - ElapsedTime);
@@ -131,9 +116,23 @@ namespace Chronos.Timer.Core
             //
             _timerTasks.Sort(CompareByStartTime);
 
-            await Task.WhenAll(runningTasks).ConfigureAwait(false);            
+            await Task.WhenAll(runningTasks).ConfigureAwait(false);
         }
         #endregion
+
+        /// <summary>
+        /// Stores the task in a list while it's running and removes it once it's done.
+        /// </summary>
+        /// <param name="taskToRun">The task to execute asynchronously.</param>
+        /// <returns>The running task.</returns>
+        async Task SaveAndRunAsync(ITimerAction taskToRun)
+        {
+            int id = Interlocked.Increment(ref _taskCounter);
+            Task runningTask = taskToRun.ExecuteAsync();
+            _currentlyRunning.Add(id, runningTask);
+            await runningTask.ConfigureAwait(false);
+            _currentlyRunning.Remove(id);
+        }
         public void Clear()
         {
             _timeTrackingStrategy.Clear();
