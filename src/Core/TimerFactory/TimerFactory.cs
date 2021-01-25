@@ -13,7 +13,7 @@ namespace Chronos.Timer.Core
         /// <returns>A new ITimer.</returns>
         public T CreateTimer<T>(ITimeTrackingStrategy timeTracker = null) where T : ITimer
         {
-            return CreateTimer<T>(new List<ITimerTask>(), timeTracker);
+            return CreateTimer<T>(new List<ITimerAction>(), timeTracker);
         }
 
         /// <summary>
@@ -23,12 +23,12 @@ namespace Chronos.Timer.Core
         /// <param name="task">The task to perform.</param>
         /// <param name="timeTracker">The strategy which will provide the elapsed time.</param>
         /// <returns>A new ITimer.</returns>
-        public T CreateTimer<T>(ITimerTask task, ITimeTrackingStrategy timeTracker = null) where T : ITimer
+        public T CreateTimer<T>(ITimerAction task, ITimeTrackingStrategy timeTracker = null) where T : ITimer
         {
             if (task == null)
                 return CreateTimer<T>(timeTracker);
 
-            return CreateTimer<T>(new List<ITimerTask> { task }, timeTracker);
+            return CreateTimer<T>(new List<ITimerAction> { task }, timeTracker);
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace Chronos.Timer.Core
         /// <param name="tasks">The list of tasks to perform.</param>
         /// <param name="timeTracker">The strategy which will provide the elapsed time.</param>
         /// <returns>A new ITimer.</returns>
-        public T CreateTimer<T>(List<ITimerTask> tasks, ITimeTrackingStrategy timeTracker = null) where T : ITimer
+        public T CreateTimer<T>(List<ITimerAction> tasks, ITimeTrackingStrategy timeTracker = null) where T : ITimer
         {
             T timer = (T)Activator.CreateInstance(typeof(T));
             timer.Initialize(timeTracker, tasks);

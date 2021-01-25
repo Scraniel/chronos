@@ -9,7 +9,7 @@ namespace Chronos.Timer.Core
     /// <summary>
     /// Represents a task that should be run at some point in the future.
     /// </summary>
-    public class BasicTimerTask : ITimerTask
+    public class BasicTimerAction : ITimerAction
     {
         #region private 
         private Action _task;
@@ -36,7 +36,7 @@ namespace Chronos.Timer.Core
         /// <param name="task">The job to run.</param>
         /// <param name="period">How long until the first and subsequent executions.</param>
         /// <param name="numTimesToRun">How long to repeat the task for (default is one execution).</param>
-        public BasicTimerTask(Action task, TimeSpan period, int numTimesToRun)
+        public BasicTimerAction(Action task, TimeSpan period, int numTimesToRun)
         {
             if(numTimesToRun <= 0)
             {

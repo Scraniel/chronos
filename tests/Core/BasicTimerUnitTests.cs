@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Chronos.Timer.Core;
 using Chronos.Timer.Mocks;
-using Chronos.Timer.Core.Timer;
 using System.Linq;
 
 namespace Chronos.Timer.Tests.Core
@@ -19,10 +18,10 @@ namespace Chronos.Timer.Tests.Core
             ITimer timer = new BasicTimer();
             ITimeTrackingStrategy timeTrackingStrategy = new TestTimeTrackingStrategy(_timeStep);
 
-            List<ITimerTask> tasks = 
+            List<ITimerAction> tasks = 
                 tasksToRun
-                    .ConvertAll((Action task) => { return new TestTimerTask(_timeStep, 1, task); })
-                    .ToList<ITimerTask>();
+                    .ConvertAll((Action task) => { return new TestTimerAction(_timeStep, 1, task); })
+                    .ToList<ITimerAction>();
             
             timer.Initialize(timeTrackingStrategy, tasks);
 
@@ -141,11 +140,11 @@ namespace Chronos.Timer.Tests.Core
 
             // If we run 3 updates, first counter should update 3 times, second 2 times, first 1 time.
             //
-            List<ITimerTask> tasks = new List<ITimerTask>
+            List<ITimerAction> tasks = new List<ITimerAction>
             {
-                new TestTimerTask(_timeStep, 3, () => { firstCounter++; }),
-                new TestTimerTask(_timeStep * 2, 2, () => { secondCounter++; }),
-                new TestTimerTask(_timeStep * 3, 1, () => { thirdCounter++; }),
+                new TestTimerAction(_timeStep, 3, () => { firstCounter++; }),
+                new TestTimerAction(_timeStep * 2, 2, () => { secondCounter++; }),
+                new TestTimerAction(_timeStep * 3, 1, () => { thirdCounter++; }),
             };          
             timer.Initialize(timeTrackingStrategy, tasks);
 

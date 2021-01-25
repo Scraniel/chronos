@@ -57,7 +57,7 @@ namespace Chronos.Timer.Tests.Core
         public void CreateTimer_SingleTimerTask_CreatesValidNewTimer()
         {
             TestTimer timer = _target.CreateTimer<TestTimer>(
-                new BasicTimerTask(() => { }, TimeSpan.FromSeconds(1), 1),
+                new BasicTimerAction(() => { }, TimeSpan.FromSeconds(1), 1),
                 new SystemTimeTrackingStrategy());
 
             AssertValidCreation(timer);
@@ -67,10 +67,10 @@ namespace Chronos.Timer.Tests.Core
         [TestMethod]
         public void CreateTimer_MultipleTimerTask_CreatesValidNewTimer()
         {
-            List<ITimerTask> tasks = new List<ITimerTask>
+            List<ITimerAction> tasks = new List<ITimerAction>
             {
-                new BasicTimerTask(() => { }, TimeSpan.FromSeconds(1), 1),
-                new BasicTimerTask(() => { }, TimeSpan.FromSeconds(1), 1)
+                new BasicTimerAction(() => { }, TimeSpan.FromSeconds(1), 1),
+                new BasicTimerAction(() => { }, TimeSpan.FromSeconds(1), 1)
             };
 
             TestTimer timer = _target.CreateTimer<TestTimer>(
@@ -98,7 +98,7 @@ namespace Chronos.Timer.Tests.Core
 
             public ITimeTrackingStrategy TimeTrackingStrategy { get; set; }
             
-            public List<ITimerTask> Tasks { get; set; }
+            public List<ITimerAction> Tasks { get; set; }
 
             Guid ITimer.Id => Guid.NewGuid();
 
@@ -122,7 +122,7 @@ namespace Chronos.Timer.Tests.Core
                 throw new NotImplementedException();
             }
 
-            void ITimer.Initialize(ITimeTrackingStrategy timeTrackingStrategy, List<ITimerTask> timerTasks)
+            void ITimer.Initialize(ITimeTrackingStrategy timeTrackingStrategy, List<ITimerAction> timerTasks)
             {
                 Initialized = true;
                 TimeTrackingStrategy = timeTrackingStrategy;

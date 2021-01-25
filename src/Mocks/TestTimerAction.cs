@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Chronos.Timer.Mocks
 {
-    public class TestTimerTask : ITimerTask
+    public class TestTimerAction : ITimerAction
     {
         public TimeSpan Period { get; set; }
 
@@ -18,7 +18,7 @@ namespace Chronos.Timer.Mocks
 
         public Action TaskToRun { get; set; }
 
-        public TestTimerTask(TimeSpan period, int timesToExecute, Action taskToRun)
+        public TestTimerAction(TimeSpan period, int timesToExecute, Action taskToRun)
         {
             Period = period;
             TimesToExecute = timesToExecute;

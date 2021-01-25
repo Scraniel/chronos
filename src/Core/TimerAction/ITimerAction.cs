@@ -6,7 +6,7 @@ namespace Chronos.Timer.Core
     /// <summary>
     /// Defines a task that should happen at some point in the future.
     /// </summary>
-    public interface ITimerTask
+    public interface ITimerAction
     {
         /// <summary>
         /// How often this task should run.

@@ -14,7 +14,7 @@ namespace Chronos.Timer.Tests.Core
             int counter = 0;
             Action task = () => counter++;
             TimeSpan interval = TimeSpan.FromMinutes(5);
-            ITimerTask timerEvent = new BasicTimerTask(task, interval, 5);
+            ITimerAction timerEvent = new BasicTimerAction(task, interval, 5);
 
             timerEvent.ExecuteAsync().Wait();
             Assert.AreEqual(1, counter);
@@ -28,7 +28,7 @@ namespace Chronos.Timer.Tests.Core
             int counter = 0;
             Action task = () => counter++;
             TimeSpan interval = TimeSpan.FromMinutes(5);
-            ITimerTask timerEvent = new BasicTimerTask(task, interval, 1);
+            ITimerAction timerEvent = new BasicTimerAction(task, interval, 1);
 
             for(int i = 0; i < 5; i++)
             {
@@ -43,7 +43,7 @@ namespace Chronos.Timer.Tests.Core
         {
             Action task = () => { };
             TimeSpan interval = TimeSpan.FromMinutes(5);
-            ITimerTask timerEvent = new BasicTimerTask(task, interval, 1);
+            ITimerAction timerEvent = new BasicTimerAction(task, interval, 1);
 
             Assert.AreEqual(true, timerEvent.CanExecute);
         }
@@ -53,7 +53,7 @@ namespace Chronos.Timer.Tests.Core
         {
             Action task = () => { };
             TimeSpan interval = TimeSpan.FromMinutes(5);
-            ITimerTask timerEvent = new BasicTimerTask(task, interval, 1);
+            ITimerAction timerEvent = new BasicTimerAction(task, interval, 1);
             timerEvent.ExecuteAsync().Wait();
 
             Assert.AreEqual(false, timerEvent.CanExecute);
@@ -67,7 +67,7 @@ namespace Chronos.Timer.Tests.Core
 
             try
             {
-                ITimerTask timerEvent = new BasicTimerTask(task, interval, 0);
+                ITimerAction timerEvent = new BasicTimerAction(task, interval, 0);
                 Assert.Fail();
             }
             catch (ArgumentOutOfRangeException) { }
@@ -78,7 +78,7 @@ namespace Chronos.Timer.Tests.Core
         {
             Action task = () => { };
             TimeSpan interval = TimeSpan.FromMinutes(5);
-            ITimerTask timerEvent = new BasicTimerTask(task, interval, 1);
+            ITimerAction timerEvent = new BasicTimerAction(task, interval, 1);
 
             Assert.AreEqual(false, timerEvent.IsFinished);
         }
@@ -89,7 +89,7 @@ namespace Chronos.Timer.Tests.Core
             Action task = () => { };
             TimeSpan interval = TimeSpan.FromMinutes(5);
             ITimeTrackingStrategy tracker = new TestTimeTrackingStrategy(interval);
-            ITimerTask timerEvent = new BasicTimerTask(task, interval, 1);
+            ITimerAction timerEvent = new BasicTimerAction(task, interval, 1);
             timerEvent.ExecuteAsync().Wait();
 
             Assert.AreEqual(true, timerEvent.IsFinished);

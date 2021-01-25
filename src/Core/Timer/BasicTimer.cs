@@ -4,50 +4,30 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Chronos.Timer.Core.Timer
+namespace Chronos.Timer.Core
 {
     public class BasicTimer : ITimer
     {
-        #region private
-        
-        private List<KeyValuePair<TimeSpan, ITimerTask>> _timerTasks;
-        private ITimeTrackingStrategy _timeTrackingStrategy;
-        private Dictionary<int, Task> _currentlyRunning;
-        private int _taskCounter = 0;
-
-        // TODO: Decide how to handle config values
-        //
-        private TimeSpan _epsilon = TimeSpan.FromMilliseconds(100);
-        private TimeSpan MaxTimespan(TimeSpan first, TimeSpan second)
-        {
-            return first > second ? first : second;
-        }
-        private int CompareByStartTime(KeyValuePair<TimeSpan, ITimerTask> first, KeyValuePair<TimeSpan, ITimerTask> second)
-        {
-            return first.Key.CompareTo(second.Key);
-        }
-        #endregion
         public TimeSpan ElapsedTime { get; private set; }
         public TimeSpan TimeLeft { get; private set; }
         public Guid Id { get; private set; }
 
         #region Explicitly implemented internal
-        void ITimer.Initialize(ITimeTrackingStrategy timeTrackingStrategy, List<ITimerTask> timerTasks)
+        void ITimer.Initialize(ITimeTrackingStrategy timeTrackingStrategy, List<ITimerAction> timerTasks)
         {
             Id = Guid.NewGuid();
-            foreach(ITimerTask timerTask in timerTasks)
-            {
-                // TODO: consider enforcing minimum period.
-                //
-                _timerTasks.Add(new KeyValuePair<TimeSpan, ITimerTask>(timerTask.Period, timerTask));
-            }
+
+            // TODO: consider enforcing minimum period.
+            //
+            _timerTasks = timerTasks
+                .Select((task) => KeyValuePair.Create(task.Period, task)).ToList();
 
             _timerTasks.Sort(CompareByStartTime);
             _timeTrackingStrategy = timeTrackingStrategy;
         }
         public BasicTimer()
         {
-            _timerTasks = new List<KeyValuePair<TimeSpan, ITimerTask>>();
+            _timerTasks = new List<KeyValuePair<TimeSpan, ITimerAction>>();
             _currentlyRunning = new Dictionary<int, Task>();
             _timeTrackingStrategy = null;
         }
@@ -57,12 +37,12 @@ namespace Chronos.Timer.Core.Timer
         /// </summary>
         /// <param name="taskToRun">The task to execute asynchronously.</param>
         /// <returns>The running task.</returns>
-        async Task SaveAndRunAsync(ITimerTask taskToRun)
+        async Task SaveAndRunAsync(ITimerAction taskToRun)
         {
             int id = Interlocked.Increment(ref _taskCounter);
             Task runningTask = taskToRun.ExecuteAsync();
             _currentlyRunning.Add(id, runningTask);
-            await runningTask;
+            await runningTask.ConfigureAwait(false);
             _currentlyRunning.Remove(id);
         }
 
@@ -76,11 +56,12 @@ namespace Chronos.Timer.Core.Timer
         /// Maintains a list of currently running tasks to potentially be cancelled later.
         /// </summary>
         /// <returns>Awaitable list of tasks running during this update.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if updated with no tasks.</exception>
         async Task ITimer.UpdateAsync()
         {
             if (_timerTasks.Count == 0)
             {
-                throw new InvalidOperationException("Empty Timers cannot be updated.");
+                throw new InvalidOperationException("Timers must contain Actions in order to be updated.");
             }
 
             _timeTrackingStrategy.Update();
@@ -94,7 +75,7 @@ namespace Chronos.Timer.Core.Timer
                 return;
             }
             
-            List<KeyValuePair<TimeSpan, ITimerTask>> toAdd = new List<KeyValuePair<TimeSpan, ITimerTask>>();
+            List<KeyValuePair<TimeSpan, ITimerAction>> toAdd = new List<KeyValuePair<TimeSpan, ITimerAction>>();
             List<Task> runningTasks = new List<Task>();
 
             // NOTES: This works under the assumption we only want tasks to be able to be
@@ -106,8 +87,11 @@ namespace Chronos.Timer.Core.Timer
             //
             while (TimeLeft == TimeSpan.Zero)
             {
-                ITimerTask taskToRun = _timerTasks[0].Value;
+                ITimerAction taskToRun = _timerTasks[0].Value;
                 runningTasks.Add(SaveAndRunAsync(taskToRun));
+
+                // TODO: consider removing from tail instead of head.
+                //
                 _timerTasks.RemoveAt(0);
 
                 // NOTE: A subtle change here to elapsed + period would mean if a task was 
@@ -117,7 +101,10 @@ namespace Chronos.Timer.Core.Timer
                 // nextTime + period will mean things are always scheduled for when they're
                 // *supposed* to have been run given it always runs on time.
                 //
-                toAdd.Add(KeyValuePair.Create(nextTime + taskToRun.Period, taskToRun));
+                if(!taskToRun.IsFinished)
+                {
+                    toAdd.Add(KeyValuePair.Create(nextTime + taskToRun.Period, taskToRun));
+                }
 
                 if(_timerTasks.Count > 0)
                 {
@@ -126,21 +113,17 @@ namespace Chronos.Timer.Core.Timer
                 }
                 else
                 {
-                    // TODO: This probably isn't the best way to do this.
+                    // TODO: Decide if Zero makes more sense here.
                     //
                     TimeLeft = TimeSpan.MaxValue;
+                    break;
                 }
             }
 
-            foreach (KeyValuePair<TimeSpan, ITimerTask> newTask in toAdd)
-            {
-                if (newTask.Value.IsFinished)
-                {
-                    continue;
-                }
-
-                _timerTasks.Add(new KeyValuePair<TimeSpan, ITimerTask>(newTask.Key, newTask.Value));
-            }
+            // Don't bother adding tasks that are finished to avoid removing in next iteration.
+            //
+            _timerTasks.AddRange(
+                toAdd.Where(task => !task.Value.IsFinished));
 
             // TODO: If performance becomes an issue, we should replace the list with a heap or actual pqueue.
             // SortedList doesn't allow for duplicates, and storing lists of tasks for a given timestamp will
@@ -148,18 +131,18 @@ namespace Chronos.Timer.Core.Timer
             //
             _timerTasks.Sort(CompareByStartTime);
 
-            await Task.WhenAll(runningTasks);            
+            await Task.WhenAll(runningTasks).ConfigureAwait(false);            
         }
         #endregion
         public void Clear()
         {
             _timeTrackingStrategy.Clear();
             ElapsedTime = TimeSpan.Zero;
-            List<KeyValuePair<TimeSpan, ITimerTask>> listCopy = _timerTasks.ToList();
+            List<KeyValuePair<TimeSpan, ITimerAction>> listCopy = _timerTasks.ToList();
             _timerTasks.Clear();
             foreach (var pair in listCopy)
             {
-                _timerTasks.Add(new KeyValuePair<TimeSpan, ITimerTask>(pair.Value.Period, pair.Value));
+                _timerTasks.Add(KeyValuePair.Create(pair.Value.Period, pair.Value));
             }
         }
         public bool IsPaused()
@@ -174,5 +157,24 @@ namespace Chronos.Timer.Core.Timer
         {
             _timeTrackingStrategy.Start();
         }
+
+        #region private
+        private List<KeyValuePair<TimeSpan, ITimerAction>> _timerTasks;
+        private ITimeTrackingStrategy _timeTrackingStrategy;
+        private Dictionary<int, Task> _currentlyRunning;
+        private int _taskCounter = 0;
+
+        // TODO: Decide how to handle config values
+        //
+        private TimeSpan _epsilon = TimeSpan.FromMilliseconds(10);
+        private TimeSpan MaxTimespan(TimeSpan first, TimeSpan second)
+        {
+            return first > second ? first : second;
+        }
+        private int CompareByStartTime(KeyValuePair<TimeSpan, ITimerAction> first, KeyValuePair<TimeSpan, ITimerAction> second)
+        {
+            return first.Key.CompareTo(second.Key);
+        }
+        #endregion
     }
 }
