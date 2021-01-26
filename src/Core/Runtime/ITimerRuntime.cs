@@ -5,10 +5,13 @@ namespace Chronos.Timer.Core
 {
     public interface ITimerRuntime
     {
-
-        TimeSpan TimeStep { get; set; }
         /// <summary>
-        /// Registers a timer with the timer runtime.
+        /// The minimum time an update loop will take to complete.
+        /// </summary>
+        TimeSpan TimeStep { get; set; }
+
+        /// <summary>
+        /// Registers a timer with the runtime, ensuring it to update & trigger its actions automatically.
         /// </summary>
         /// <param name="timeUntilExecution">The amount of time before the given action will be executed.</param>
         /// <param name="actionToExecute">The action to execute.</param>
@@ -17,7 +20,7 @@ namespace Chronos.Timer.Core
             where T : ITimer;
 
         /// <summary>
-        /// Registers a timer with the timer runtime.
+        /// Registers a timer with the runtime, ensuring it to update & trigger its actions automatically.
         /// </summary>
         /// <param name="timeUntilExecution">The amount of time before the given action will be executed.</param>
         /// <param name="actionToExecute">The action to execute.</param>
@@ -26,12 +29,47 @@ namespace Chronos.Timer.Core
         T Register<T>(TimeSpan timeUntilExecution, Action actionToExecute, ITimeTrackingStrategy strategy)
             where T : ITimer;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="timeUntilExecution"></param>
+        /// <param name="actionToExecute"></param>
+        /// <param name="strategy"></param>
+        /// <param name="timerFactory"></param>
+        /// <returns></returns>
         T Register<T>(TimeSpan timeUntilExecution, Action actionToExecute, ITimeTrackingStrategy strategy, ITimerFactory timerFactory)
             where T : ITimer;
-        T Register(ITimeTrackingStrategy strategy, ITimerTask actionToExecute);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="strategy"></param>
+        /// <param name="actionToExecute"></param>
+        /// <returns></returns>
+        T Register<T>(ITimeTrackingStrategy strategy, ITimerTask actionToExecute)
+            where T : ITimer;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="strategy"></param>
+        /// <param name="actionToExecute"></param>
+        /// <param name="timerFactory"></param>
+        /// <returns></returns>
         T Register<T>(ITimeTrackingStrategy strategy, ITimerTask actionToExecute, ITimerFactory timerFactory)
             where T : ITimer;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="strategy"></param>
+        /// <param name="actionsToExecute"></param>
+        /// <param name="timerFactory"></param>
+        /// <returns></returns>
         T Register<T>(ITimeTrackingStrategy strategy, IEnumerable<ITimerTask> actionsToExecute, ITimerFactory timerFactory)
             where T : ITimer;
         
