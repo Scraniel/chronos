@@ -4,8 +4,10 @@ namespace Chronos.Timer.Core
 {
     /// <summary>
     /// Default Tracker that uses System time from DateTime.
+    /// 
+    /// NOTE: Not thread safe.
     /// </summary>
-    public class SystemTimeTracker : ITimeTrackingStrategy
+    public class SystemTimeTrackingStrategy : ITimeTrackingStrategy
     {
         TimeSpan _elapsed;
         DateTime _lastUpdate;
@@ -13,7 +15,7 @@ namespace Chronos.Timer.Core
         /// <summary>
         /// Constructor. Initializes values.
         /// </summary>
-        public SystemTimeTracker()
+        public SystemTimeTrackingStrategy()
         {
             Stop();
             Clear();

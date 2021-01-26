@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Chronos.Timer.Tests.Core
 {
@@ -10,11 +11,11 @@ namespace Chronos.Timer.Tests.Core
     public class TimerFactoryUnitTests
     {
         private readonly TimerFactory _target;
-        private readonly TimerTask _timerTask;
+        private readonly BasicTimerAction _timerTask;
         public TimerFactoryUnitTests()
         {
             _target = new TimerFactory();
-            _timerTask = new TimerTask(() => { }, TimeSpan.FromSeconds(1));
+            _timerTask = new BasicTimerAction(() => { }, TimeSpan.FromSeconds(1), 1);
         }
 
         [TestMethod]
@@ -29,10 +30,10 @@ namespace Chronos.Timer.Tests.Core
         [TestMethod]
         public void CreateTimer_WithSystemTimeTracking_CreatesValidNewTimer()
         {
-            TestTimer timer = _target.CreateTimer<TestTimer>(_timerTask, new SystemTimeTracker());
+            TestTimer timer = _target.CreateTimer<TestTimer>(_timerTask, new SystemTimeTrackingStrategy());
 
             AssertValidCreation(timer);
-            Assert.IsInstanceOfType(timer.TimeTrackingStrategy, typeof(SystemTimeTracker));
+            Assert.IsInstanceOfType(timer.TimeTrackingStrategy, typeof(SystemTimeTrackingStrategy));
         }
 
         [TestMethod]
@@ -50,8 +51,8 @@ namespace Chronos.Timer.Tests.Core
         public void CreateTimer_SingleTimerTask_CreatesValidNewTimer()
         {
             TestTimer timer = _target.CreateTimer<TestTimer>(
-                new TimerTask(() => { }, TimeSpan.FromSeconds(1)),
-                new SystemTimeTracker());
+                new BasicTimerAction(() => { }, TimeSpan.FromSeconds(1), 1),
+                new SystemTimeTrackingStrategy());
 
             AssertValidCreation(timer);
             Assert.AreEqual(1, timer.Tasks.Count);
@@ -60,15 +61,15 @@ namespace Chronos.Timer.Tests.Core
         [TestMethod]
         public void CreateTimer_MultipleTimerTask_CreatesValidNewTimer()
         {
-            List<ITimerTask> tasks = new List<ITimerTask>
+            List<ITimerAction> tasks = new List<ITimerAction>
             {
-                new TimerTask(() => { }, TimeSpan.FromSeconds(1)),
-                new TimerTask(() => { }, TimeSpan.FromSeconds(1))
+                new BasicTimerAction(() => { }, TimeSpan.FromSeconds(1), 1),
+                new BasicTimerAction(() => { }, TimeSpan.FromSeconds(1), 1)
             };
 
             TestTimer timer = _target.CreateTimer<TestTimer>(
                 tasks,
-                new SystemTimeTracker());
+                new SystemTimeTrackingStrategy());
 
             AssertValidCreation(timer);
             Assert.AreEqual(2, timer.Tasks.Count);
@@ -91,7 +92,7 @@ namespace Chronos.Timer.Tests.Core
 
             public ITimeTrackingStrategy TimeTrackingStrategy { get; set; }
             
-            public List<ITimerTask> Tasks { get; set; }
+            public List<ITimerAction> Tasks { get; set; }
 
             Guid ITimer.Id => Guid.NewGuid();
 
@@ -100,7 +101,7 @@ namespace Chronos.Timer.Tests.Core
                 throw new NotImplementedException();
             }
 
-            public bool IsStopped()
+            public bool IsPaused()
             {
                 throw new NotImplementedException();
             }
@@ -114,15 +115,13 @@ namespace Chronos.Timer.Tests.Core
             {
                 throw new NotImplementedException();
             }
-
-            void ITimer.Initialize(ITimeTrackingStrategy timeTrackingStrategy, IEnumerable<ITimerTask> timerTasks)
+            void ITimer.Initialize(ITimeTrackingStrategy timeTrackingStrategy, IEnumerable<ITimerAction> timerTasks)
             {
                 Initialized = true;
                 TimeTrackingStrategy = timeTrackingStrategy;
                 Tasks = timerTasks.ToList();
             }
-
-            void ITimer.Update()
+            Task ITimer.UpdateAsync()
             {
                 throw new NotImplementedException();
             }
