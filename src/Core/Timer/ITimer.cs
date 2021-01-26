@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Chronos.Timer.Core
 {
@@ -21,7 +22,7 @@ namespace Chronos.Timer.Core
         /// <summary>
         /// The Timer's UID used to register/unregister with the Chronos timer runtime.
         /// </summary>
-        internal Guid Id { get; }
+        public Guid Id { get; }
 
         /// <summary>
         /// Unpauses the timer and restarts tracking time.
@@ -37,7 +38,7 @@ namespace Chronos.Timer.Core
         /// Returns true if the tracker is not running.
         /// </summary>
         /// <returns></returns>
-        public bool IsStopped();
+        public bool IsPaused();
 
         /// <summary>
         /// Wipes the elapsed time stored in the tracker. Does not pause the timer.
@@ -49,11 +50,12 @@ namespace Chronos.Timer.Core
         /// </summary>
         /// <param name="timeTrackingStrategy">The strategy which will provide the elapsed time.</param>
         /// <param name="timerTasks">List of tasks to be executed by this timer.</param>
-        internal void Initialize(ITimeTrackingStrategy timeTrackingStrategy, IEnumerable<ITimerTask> timerTasks);
+        internal void Initialize(ITimeTrackingStrategy timeTrackingStrategy, IEnumerable<ITimerAction> timerTasks);
 
         /// <summary>
-        /// Updates the elapsed time stored in the timer.
+        /// Updates the elapsed time stored in the timer one step forward in time as dictated by its 
+        /// TimeTrackingStrategyand and runs tasks if enough time has passed.
         /// </summary>
-        internal void Update();
+        internal Task UpdateAsync();
     }
 }

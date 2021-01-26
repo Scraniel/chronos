@@ -6,28 +6,32 @@ namespace Chronos.Timer.Core
     /// <summary>
     /// Defines a task that should happen at some point in the future.
     /// </summary>
-    public interface ITimerTask
+    public interface ITimerAction
     {
         /// <summary>
         /// How often this task should run.
         /// </summary>
-        TimeSpan ExecutionPeriod { get; }
+        TimeSpan Period { get; }
 
         /// <summary>
-        /// Now many times this has been run.
+        /// How many times to run this task.
         /// </summary>
-        int NumberOfExecutions { get; }
+        int TimesToExecute { get; }
 
         /// <summary>
-        /// Returns true if task is ready to execute.
+        /// True if task can execute, false otherwise.
         /// </summary>
-        /// <returns>True if task can execute, false otherwise.</returns>
-        bool CanExecute();
+        bool CanExecute { get; }
+
+        /// <summary>
+        /// True if task is finished, false otherwise.
+        /// </summary>
+        bool IsFinished { get; }
 
         /// <summary>
         /// The actual task to run. 
         /// </summary>
         /// <returns>The currently running task.</returns>
-        Task Execute();
+        Task ExecuteAsync();
     }
 }
