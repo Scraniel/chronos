@@ -16,22 +16,17 @@ namespace Chronos.Timer.Core
         /// <summary>
         /// The collection of timers, keyed by their IDs.
         /// </summary>
-        private Dictionary<Guid, ITimer> _timers = new Dictionary<Guid, ITimer>();
-        
-        /// <summary>
-        /// Whether the runtime is currently paused.
-        /// </summary>
-        private bool _isPaused = false;
-        
+        private Dictionary<Guid, ITimer> _timers;
+
         /// <summary>
         /// Cancellation token used to cancel the update thread started whenever a timer is first registered.
         /// </summary>
-        private CancellationTokenSource _cancellationTokenSource = null;
-        
+        private CancellationTokenSource _cancellationTokenSource;
+
         /// <summary>
         /// Default factory leveraged to create timers.
         /// </summary>
-        private ITimerFactory _timerFactory = new TimerFactory();
+        private ITimerFactory _timerFactory;
         #endregion
 
         #region Properties
@@ -41,31 +36,33 @@ namespace Chronos.Timer.Core
         public TimeSpan TimeStep { get; set; } = TimeSpan.FromMilliseconds(10);
         #endregion
 
-        public T Register<T>(TimeSpan timeUntilExecution, Action actionToExecute)
-            where T : ITimer
-            => Register(_timerFactory.CreateTimer<T>(new BasicTimerAction(actionToExecute, timeUntilExecution, 1)));
+        public TimerRuntime()
+            : this(new TimerFactory())
+        {
+        }
 
-        public T Register<T>(TimeSpan timeUntilExecution, Action actionToExecute, int numberOfExecution) where T : ITimer
-            => Register(_timerFactory.CreateTimer<T>(new BasicTimerAction(actionToExecute, timeUntilExecution, numberOfExecution)));
+        ~TimerRuntime()
+        {
+            _cancellationTokenSource.Cancel();
+        }
 
-        public T Register<T>(TimeSpan timeUntilExecution, Action actionToExecute, int numberOfExecution, ITimerFactory factory) where T : ITimer
-            => Register(factory.CreateTimer<T>(new BasicTimerAction(actionToExecute, timeUntilExecution, numberOfExecution)));
+        public TimerRuntime(ITimerFactory timerFactory)
+        {
+            _timerFactory = timerFactory;
+            _cancellationTokenSource = null;
+            _timers = new Dictionary<Guid, ITimer>();
+        }
 
-        public T Register<T>(ITimeTrackingStrategy strategy, ITimerAction actionToExecute)
-            where T : ITimer
-            => Register(_timerFactory.CreateTimer<T>(actionToExecute, strategy));
-
-        public T Register<T>(ITimeTrackingStrategy strategy, ITimerAction actionToExecute, ITimerFactory timerFactory)
-            where T : ITimer
-            => Register(timerFactory.CreateTimer<T>(actionToExecute, strategy));
-
-        public T Register<T>(ITimeTrackingStrategy strategy, IEnumerable<ITimerAction> actionsToExecute, ITimerFactory timerFactory) where T : ITimer
-            => Register(timerFactory.CreateTimer<T>(actionsToExecute, strategy));
+        public T Register<T>(TimeSpan period, int numberOfExecution, Action actionToExecute) where T : ITimer
+            => Register(_timerFactory
+                    .CreateTimer<T>(new BasicTimerAction(actionToExecute, period, numberOfExecution)));
 
         public T Register<T>(T timer) where T : ITimer
         {
             if (!_timers.ContainsKey(timer.Id))
+            {
                 _timers.Add(timer.Id, timer);
+            }
 
             // Ensure that the update loop has been started.
             if (_cancellationTokenSource == null || _cancellationTokenSource.IsCancellationRequested)
@@ -85,28 +82,15 @@ namespace Chronos.Timer.Core
         public void Unregister(Guid timerId)
         {
             if (_timers.ContainsKey(timerId))
+            {
                 _timers.Remove(timerId);
+            }
 
             // We want to stop executing the update thread when no timers are registered.
             if (_timers.Count == 0)
+            {
                 StopUpdate();
-        }
-
-        /// <summary>
-        /// Pauses all timers within the runtime.
-        /// </summary>
-        /// <remarks>Action which are executed at pause time will finish executing.</remarks>
-        public void Pause()
-        {
-            _isPaused = true;
-        }
-
-        /// <summary>
-        /// Unpauses all timers within the runtime.
-        /// </summary>
-        public void Unpause()
-        {
-            _isPaused = false;
+            }
         }
 
         private void StartUpdate()
@@ -119,11 +103,7 @@ namespace Chronos.Timer.Core
 
             _cancellationTokenSource = new CancellationTokenSource();
 
-            Task.Run(
-                () =>
-                {
-                    Update(_cancellationTokenSource.Token);
-                });
+            Task.Run(() => Update(_cancellationTokenSource.Token));
         }
 
         private void StopUpdate()
@@ -136,13 +116,10 @@ namespace Chronos.Timer.Core
             while (!token.IsCancellationRequested)
             {
                 Stopwatch sw = Stopwatch.StartNew();
-                if (!_isPaused)
+                foreach (ITimer timer in _timers.Values)
                 {
-                    foreach (ITimer timer in _timers.Values)
-                    {
-                        if (!timer.IsPaused())
-                            timer.UpdateAsync();
-                    }
+                    if (!timer.IsPaused())
+                        timer.UpdateAsync();
                 }
                 sw.Stop();
 
@@ -152,5 +129,15 @@ namespace Chronos.Timer.Core
                 }
             }
         }
+
+        public ITimer GetTimer(Guid timerId)
+        {
+            if (_timers.TryGetValue(timerId, out ITimer timer))
+                return timer;
+            return null;
+        }
+
+        public IEnumerable<ITimer> ListTimers()
+            => _timers.Values;
     }
 }

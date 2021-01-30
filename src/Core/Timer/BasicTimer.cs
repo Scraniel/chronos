@@ -20,8 +20,7 @@ namespace Chronos.Timer.Core
             _timeTrackingStrategy = null;
         }
 
-        #region Explicitly implemented internal
-        void ITimer.Initialize(ITimeTrackingStrategy timeTrackingStrategy, IEnumerable<ITimerAction> timerTasks)
+        public void Initialize(ITimeTrackingStrategy timeTrackingStrategy, IEnumerable<ITimerAction> timerTasks)
         {
             // TODO: consider enforcing minimum period.
             //
@@ -42,7 +41,7 @@ namespace Chronos.Timer.Core
         /// </summary>
         /// <returns>Awaitable list of tasks running during this update.</returns>
         /// <exception cref="InvalidOperationException">Thrown if updated with no tasks.</exception>
-        async Task ITimer.UpdateAsync()
+        public async Task UpdateAsync()
         {
             if (_timerTasks.Count == 0)
             {
@@ -118,7 +117,6 @@ namespace Chronos.Timer.Core
 
             await Task.WhenAll(runningTasks).ConfigureAwait(false);
         }
-        #endregion
 
         /// <summary>
         /// Stores the task in a list while it's running and removes it once it's done.
