@@ -45,8 +45,17 @@ namespace Chronos.Timer.Core
         /// <param name="timerId">The Id of the timer.</param>
         void Unregister(Guid timerId);
 
+        /// <summary>
+        /// Gets a timer which is currently registered with this runtime.
+        /// </summary>
+        /// <param name="timerId">The id of the timer registered with this runtime.</param>
+        /// <returns>Returns the timer with the given id.</returns>
         ITimer GetTimer(Guid timerId);
 
-        IEnumerable<ITimer> ListTimers();
+        /// <summary>
+        /// Gets all of the timers currently registered to this runtime.
+        /// </summary>
+        /// <returns>A <see cref="IEnumerable{T}"/> of all timers registered with this runtime.</returns>
+        IEnumerable<ITimer> GetTimers();
     }
 }

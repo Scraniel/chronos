@@ -56,15 +56,34 @@ namespace Chronos.Timer.Tests.Core
         }
 
         [TestMethod]
-        public void Register_DuplicateRegister_NoOp()
+        public void Register_RegisterSameTimerTwice_SingleRegistration()
         {
             ITimer timer1 = _target.Register<MockTimer>(TimeSpan.FromSeconds(1), 1, () => { });
             Assert.IsNotNull(timer1);
             
             ITimer timer2 = _target.Register(timer1);
+            
             Assert.IsNotNull(timer2);
-
             Assert.AreEqual(timer1, timer2);
+
+            List<ITimer> timers = _target.GetTimers().ToList();
+            Assert.AreEqual(1, timers.Count);
+        }
+
+        [TestMethod]
+        public void Register_RegisterTwoUniqueTimers_CreatesTwoTimers()
+        {
+            int createCount = 0;
+            _mockTimerFactory.OnCreateTimer = () =>
+            {
+                createCount++;
+                return new MockTimer();
+            };
+
+            _target.Register<MockTimer>(TimeSpan.FromSeconds(1), 1, () => { });
+            _target.Register<MockTimer>(TimeSpan.FromSeconds(1), 1, () => { });
+
+            Assert.AreEqual(2, createCount);
         }
 
 
@@ -104,11 +123,11 @@ namespace Chronos.Timer.Tests.Core
         {
             _target.Register<MockTimer>(TimeSpan.FromSeconds(1), 1, () => { });
             
-            Assert.AreEqual(1, _target.ListTimers().ToList().Count);
+            Assert.AreEqual(1, _target.GetTimers().ToList().Count);
 
             _target.Unregister(Guid.NewGuid());
 
-            Assert.AreEqual(1, _target.ListTimers().ToList().Count);
+            Assert.AreEqual(1, _target.GetTimers().ToList().Count);
         }
 
         [TestMethod]
@@ -130,7 +149,7 @@ namespace Chronos.Timer.Tests.Core
         public void ListTimers_NoTimers_ReturnsEmptyList()
         {
             List<ITimer> timers = _target
-                .ListTimers()
+                .GetTimers()
                 .ToList();
 
             Assert.AreEqual(0, timers.Count);
@@ -142,7 +161,7 @@ namespace Chronos.Timer.Tests.Core
             ITimer timer = _target.Register<MockTimer>(TimeSpan.FromSeconds(1), 1, () => { });
 
             List<ITimer> timers = _target
-                .ListTimers()
+                .GetTimers()
                 .ToList();
 
             Assert.AreEqual(1, timers.Count);
@@ -166,7 +185,7 @@ namespace Chronos.Timer.Tests.Core
                 _target.Unregister(timers[i].Id);
             }
 
-            List<ITimer> runtimeTimers = _target.ListTimers().ToList();
+            List<ITimer> runtimeTimers = _target.GetTimers().ToList();
             
             Assert.AreEqual(totalTimers - totalTimers / 2, runtimeTimers.Count);
             
