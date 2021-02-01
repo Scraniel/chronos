@@ -86,38 +86,6 @@ namespace Chronos.Timer.Tests.Core
             Assert.AreEqual(2, createCount);
         }
 
-
-        [TestMethod]
-        public async Task Unregister_TimerIsRegistered_StopsUpdating()
-        {
-            // since this test is time based, we need to minimize the time needed to wait.
-            _target.TimeStep = TimeSpan.Zero;
-
-            SemaphoreSlim updateLock = new SemaphoreSlim(1, 1);
-            updateLock.Wait();
-
-            bool isUpdated = false;
-            _mockTimerFactory.MockTimer = new MockTimer()
-            {
-                OnUpdateAsync = () =>
-                {
-                    isUpdated = true;
-                    updateLock.Release();
-                    return Task.CompletedTask;
-                }
-            };
-
-            MockTimer timer = _target.Register<MockTimer>(TimeSpan.FromSeconds(1), 1, () => { });
-            await updateLock.WaitAsync(_testTimeout).ConfigureAwait(false);
-            Assert.IsTrue(isUpdated);
-            
-            _target.Unregister(timer.Id);
-            isUpdated = false;
-
-            Thread.Sleep(TimeSpan.FromMilliseconds(50));
-            Assert.IsFalse(isUpdated);
-        }
-
         [TestMethod]
         public void Unregister_TimerIsNotRegistered_NoOp()
         {
