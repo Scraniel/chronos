@@ -9,16 +9,16 @@ namespace Chronos.Timer.Core
     /// </summary>
     public class SystemTimeTrackingStrategy : ITimeTrackingStrategy
     {
-        TimeSpan _elapsed;
-        DateTime _lastUpdate;
+        private TimeSpan _elapsed;
+        private DateTime _lastUpdate;
 
         /// <summary>
         /// Constructor. Initializes values.
         /// </summary>
         public SystemTimeTrackingStrategy()
         {
-            Stop();
             Clear();
+            Start();
         }
 
         /// <summary>

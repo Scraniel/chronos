@@ -22,6 +22,8 @@ namespace Chronos.Timer.Core
 
         public void Initialize(ITimeTrackingStrategy timeTrackingStrategy, IEnumerable<ITimerAction> timerTasks)
         {
+            timeTrackingStrategy = timeTrackingStrategy ?? throw new ArgumentNullException(nameof(timeTrackingStrategy));
+            
             // TODO: consider enforcing minimum period.
             //
             _timerTasks = timerTasks
