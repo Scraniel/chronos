@@ -47,6 +47,7 @@ namespace Chronos.Timer.Core
             _task = task;
             _finished = false;
             TimesToExecute = numTimesToRun;
+            Period = period;
         }
         public async Task ExecuteAsync()
         {

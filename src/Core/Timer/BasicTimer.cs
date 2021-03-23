@@ -8,7 +8,8 @@ namespace Chronos.Timer.Core
 {
     public class BasicTimer : ITimer
     {
-        public TimeSpan ElapsedTime { get; private set; }
+
+        public TimeSpan TotalElapsedTime { get; private set; }
         public TimeSpan TimeLeft { get; private set; }
         public Guid Id { get; private set; }
 
@@ -29,6 +30,7 @@ namespace Chronos.Timer.Core
 
             _timerTasks.Sort(CompareByStartTime);
             _timeTrackingStrategy = timeTrackingStrategy;
+            _timeTrackingStrategy.Start();
         }
 
         /// <summary>
@@ -49,10 +51,12 @@ namespace Chronos.Timer.Core
             }
 
             _timeTrackingStrategy.Update();
-            ElapsedTime = _timeTrackingStrategy.GetTimeElapsed();
+            TimeSpan previousElapsedTime = TotalElapsedTime;
+            TotalElapsedTime = _timeTrackingStrategy.GetTimeElapsed();
+            TimeSpan stepTime = TotalElapsedTime - previousElapsedTime;
 
             TimeSpan nextTime = _timerTasks[0].Key;
-            TimeLeft = MaxTimespan(TimeSpan.Zero, nextTime - _epsilon - ElapsedTime);
+            TimeLeft = MaxTimespan(TimeSpan.Zero, nextTime - _epsilon - stepTime);
 
             if (TimeLeft > TimeSpan.Zero)
             {
@@ -93,7 +97,7 @@ namespace Chronos.Timer.Core
                 if (_timerTasks.Count > 0)
                 {
                     nextTime = _timerTasks[0].Key;
-                    TimeLeft = MaxTimespan(TimeSpan.Zero, nextTime - _epsilon - ElapsedTime);
+                    TimeLeft = MaxTimespan(TimeSpan.Zero, nextTime - _epsilon - TotalElapsedTime);
                 }
                 else
                 {
@@ -134,7 +138,7 @@ namespace Chronos.Timer.Core
         public void Clear()
         {
             _timeTrackingStrategy.Clear();
-            ElapsedTime = TimeSpan.Zero;
+            TotalElapsedTime = TimeSpan.Zero;
             List<KeyValuePair<TimeSpan, ITimerAction>> listCopy = _timerTasks.ToList();
             _timerTasks.Clear();
             foreach (var pair in listCopy)
@@ -160,6 +164,7 @@ namespace Chronos.Timer.Core
         private ITimeTrackingStrategy _timeTrackingStrategy;
         private Dictionary<int, Task> _currentlyRunning;
         private int _taskCounter = 0;
+        private TimeSpan _previousTime = TimeSpan.Zero;
 
         // TODO: Decide how to handle config values
         //
