@@ -7,7 +7,7 @@ namespace Chronos.Timer.Mocks
 {
     public class MockTimer : ITimer
     {
-        public TimeSpan ElapsedTime { get; set; }
+        public TimeSpan TotalElapsedTime { get; set; }
 
         public TimeSpan TimeLeft { get; set; }
 
@@ -49,7 +49,7 @@ namespace Chronos.Timer.Mocks
             return new MockTimer
             {
                 Id = Id,
-                ElapsedTime = ElapsedTime,
+                TotalElapsedTime = TotalElapsedTime,
                 TimeLeft = TimeLeft,
                 OnClear = (Action)OnClear?.Clone(),
                 OnInitialize = (Action)OnInitialize?.Clone(),

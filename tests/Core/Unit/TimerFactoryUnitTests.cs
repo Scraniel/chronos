@@ -84,7 +84,7 @@ namespace Chronos.Timer.Tests.Core
         // TODO Replace with mock implementation
         private class TestTimer : ITimer
         {
-            public TimeSpan ElapsedTime => throw new NotImplementedException();
+            public TimeSpan TotalElapsedTime => throw new NotImplementedException();
 
             public TimeSpan TimeLeft => throw new NotImplementedException();
 

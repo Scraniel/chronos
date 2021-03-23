@@ -44,7 +44,7 @@ namespace Chronos.Timer.Tests.Core
             ITimer timer = GetBasicTimerAndInitialize(new List<Action> { _noOpAction });
             timer.Pause();
             timer.UpdateAsync().Wait();
-            Assert.AreEqual(TimeSpan.Zero, timer.ElapsedTime);
+            Assert.AreEqual(TimeSpan.Zero, timer.TotalElapsedTime);
         }
 
         [TestMethod]
@@ -53,10 +53,10 @@ namespace Chronos.Timer.Tests.Core
             ITimer timer = GetBasicTimerAndInitialize(new List<Action> { _noOpAction });
             timer.Pause();
             timer.UpdateAsync().Wait();
-            Assert.AreEqual(TimeSpan.Zero, timer.ElapsedTime);
+            Assert.AreEqual(TimeSpan.Zero, timer.TotalElapsedTime);
             timer.Unpause();
             timer.UpdateAsync().Wait();
-            Assert.AreEqual(_timeStep, timer.ElapsedTime);
+            Assert.AreEqual(_timeStep, timer.TotalElapsedTime);
         }
 
         [TestMethod]
@@ -83,10 +83,10 @@ namespace Chronos.Timer.Tests.Core
             {
                 timer.UpdateAsync().Wait();
             }
-            Assert.IsTrue(timer.ElapsedTime > TimeSpan.Zero);
+            Assert.IsTrue(timer.TotalElapsedTime > TimeSpan.Zero);
 
             timer.Clear();
-            Assert.AreEqual(TimeSpan.Zero, timer.ElapsedTime);
+            Assert.AreEqual(TimeSpan.Zero, timer.TotalElapsedTime);
         }
 
         [TestMethod]
@@ -98,7 +98,7 @@ namespace Chronos.Timer.Tests.Core
             {
                 timer.UpdateAsync().Wait();
             }
-            Assert.AreEqual(_timeStep * numUpdates, timer.ElapsedTime);
+            Assert.AreEqual(_timeStep * numUpdates, timer.TotalElapsedTime);
         }
 
         [TestMethod]
