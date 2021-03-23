@@ -51,12 +51,10 @@ namespace Chronos.Timer.Core
             }
 
             _timeTrackingStrategy.Update();
-            TimeSpan previousElapsedTime = TotalElapsedTime;
             TotalElapsedTime = _timeTrackingStrategy.GetTimeElapsed();
-            TimeSpan stepTime = TotalElapsedTime - previousElapsedTime;
 
             TimeSpan nextTime = _timerTasks[0].Key;
-            TimeLeft = MaxTimespan(TimeSpan.Zero, nextTime - _epsilon - stepTime);
+            TimeLeft = MaxTimespan(TimeSpan.Zero, nextTime - _epsilon - TotalElapsedTime);
 
             if (TimeLeft > TimeSpan.Zero)
             {

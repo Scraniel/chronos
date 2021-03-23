@@ -12,7 +12,7 @@ namespace Chronos.Timer.Examples
         static void Main(string[] args)
         {
             int numRepeats = 10; 
-            long eventPeriodMs = 200;
+            long eventPeriodMs = 1000;
             long idealTimeMs = 0;
             _endLine = numRepeats + _startLine + 1;
 
