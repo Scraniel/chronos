@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chronos.Timer.Mocks", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chronos.Timer.Tests.Core", "tests\Core\Chronos.Timer.Tests.Core.csproj", "{FF595757-9B62-4A42-A258-43335D509481}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{B1CC95D6-22BD-4B64-A526-7A5F884D560B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronos.Timer.Examples", "Chronos.Timer.Examples\Chronos.Timer.Examples.csproj", "{C872F72B-7220-4354-8C24-4C6F84BD8BAD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +35,10 @@ Global
 		{FF595757-9B62-4A42-A258-43335D509481}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF595757-9B62-4A42-A258-43335D509481}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF595757-9B62-4A42-A258-43335D509481}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C872F72B-7220-4354-8C24-4C6F84BD8BAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C872F72B-7220-4354-8C24-4C6F84BD8BAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C872F72B-7220-4354-8C24-4C6F84BD8BAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C872F72B-7220-4354-8C24-4C6F84BD8BAD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,6 +47,7 @@ Global
 		{64F5A808-2563-48A3-9DE8-120700972444} = {BD4BB505-47EF-4E57-9E4A-DBC40652DA5E}
 		{1DB51DCF-C07B-469E-B531-67107314BE48} = {BD4BB505-47EF-4E57-9E4A-DBC40652DA5E}
 		{FF595757-9B62-4A42-A258-43335D509481} = {89536306-B4ED-4E26-B38C-197E81F0A741}
+		{C872F72B-7220-4354-8C24-4C6F84BD8BAD} = {B1CC95D6-22BD-4B64-A526-7A5F884D560B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BB098665-CF57-4E73-B546-5299A41D4E3A}
