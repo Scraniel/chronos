@@ -9,6 +9,15 @@ namespace Chronos.Timer.Examples
 {
     class BasicTimerExample
     {
+
+        private static int _endLine;
+        private static int _startLine = 2;
+        private static string _lineBreak = "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=";
+        private static object _writeLock = new object();
+
+        private static long _totalDelay = 0;
+        private static int _executionCount = 0;
+
         static void Main(string[] args)
         {
             int numRepeats = 10; 
@@ -68,14 +77,6 @@ namespace Chronos.Timer.Examples
             Console.ReadKey();
         }
 
-        private static int _endLine;
-        private static int _startLine = 2;
-        private static string _lineBreak = "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=";
-        private static object _writeLock = new object();
-
-        private static long _totalDelay = 0;
-        private static int _executionCount = 0;
-
         private static void PrintEndLine()
         {
             lock (_writeLock)
@@ -87,7 +88,7 @@ namespace Chronos.Timer.Examples
             }
         }
 
-        static async Task PrintStats()
+        private static async Task PrintStats()
         {
             int refreshRateMs = 500;
 
