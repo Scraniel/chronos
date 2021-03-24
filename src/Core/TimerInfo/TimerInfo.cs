@@ -1,14 +1,13 @@
 ﻿using System;
 
-namespace Chronos.Timer.Core.TimerInfo
+namespace Chronos.Timer.Core
 {
+    /// <summary>
+    /// Encapsulates timer-related information.
+    /// </summary>
     public class TimerInfo
     {
         private ITimer _timer;
-        public TimerInfo(ITimer timer)
-        {
-            _timer = timer;
-        }
 
         /// <summary>
         /// The elapsed time since the timer was initially started.
@@ -34,10 +33,14 @@ namespace Chronos.Timer.Core.TimerInfo
         /// <summary>
         /// The Timer's UID used to register/unregister with the Chronos timer runtime.
         /// </summary>
-        public Guid Id { get
-            {
-                return _timer.Id;
-            }
+        public Guid Id
+        {
+            get => _timer.Id;
+        }
+
+        public TimerInfo(ITimer timer)
+        {
+            _timer = timer;
         }
 
         /// <summary>
