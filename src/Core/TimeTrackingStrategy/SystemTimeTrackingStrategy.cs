@@ -73,7 +73,9 @@ namespace Chronos.Timer.Core
                 return;
             }
 
-            _elapsed += DateTime.Now - _lastUpdate;
+            DateTime now = DateTime.Now;
+            _elapsed += now - _lastUpdate;
+            _lastUpdate = now;
         }
     }
 }
