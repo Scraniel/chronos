@@ -12,9 +12,9 @@ namespace Chronos.Timer.Core
         /// <summary>
         /// The elapsed time since the timer was initially started.
         /// </summary>
-        public TimeSpan ElapsedTime
+        public TimeSpan TotalElapsedTime
         {
-            get => _timer.ElapsedTime;
+            get => _timer.TotalElapsedTime;
         }
 
         /// <summary>
