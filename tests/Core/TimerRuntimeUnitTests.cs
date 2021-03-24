@@ -27,7 +27,7 @@ namespace Chronos.Timer.Tests.Core
         [TestMethod]
         public void Register_CreatesTimerSuccessfully_TimerIsRegistered()
         {
-            TimerInfo timer = _target.Register<MockTimer>(TimeSpan.FromSeconds(1), 1, () => { });
+            TimerProxy timer = _target.Register<MockTimer>(TimeSpan.FromSeconds(1), 1, () => { });
             Assert.IsNotNull(timer);
             Assert.IsNotNull(_target.GetTimer(timer.Id));
         }
@@ -61,15 +61,15 @@ namespace Chronos.Timer.Tests.Core
             MockTimer timer = _mockTimerFactory.CreateTimer<MockTimer>(
                 new BasicTimerAction(() => { }, TimeSpan.FromSeconds(1), 1));
 
-            TimerInfo timer1 = _target.Register(timer);
+            TimerProxy timer1 = _target.Register(timer);
             Assert.IsNotNull(timer);
             
-            TimerInfo timer2 = _target.Register(timer);
+            TimerProxy timer2 = _target.Register(timer);
             
             Assert.IsNotNull(timer2);
             Assert.AreEqual(timer.Id, timer2.Id);
 
-            List<TimerInfo> timers = _target.GetTimers().ToList();
+            List<TimerProxy> timers = _target.GetTimers().ToList();
             Assert.AreEqual(1, timers.Count);
         }
 
@@ -104,7 +104,7 @@ namespace Chronos.Timer.Tests.Core
         [TestMethod]
         public void GetTimer_TimerIsRegistered_ReturnsTimer()
         {
-            TimerInfo timer = _target.Register<MockTimer>(TimeSpan.FromSeconds(1), 1, () => { });
+            TimerProxy timer = _target.Register<MockTimer>(TimeSpan.FromSeconds(1), 1, () => { });
 
             Assert.IsNotNull(_target.GetTimer(timer.Id));
         }
@@ -112,14 +112,14 @@ namespace Chronos.Timer.Tests.Core
         [TestMethod]
         public void GetTimer_TimerIsNotRegistered_ReturnsNull()
         {
-            TimerInfo timer = _target.GetTimer(Guid.NewGuid());
+            TimerProxy timer = _target.GetTimer(Guid.NewGuid());
             Assert.IsNull(timer);
         }
 
         [TestMethod]
         public void ListTimers_NoTimers_ReturnsEmptyList()
         {
-            List<TimerInfo> timers = _target
+            List<TimerProxy> timers = _target
                 .GetTimers()
                 .ToList();
 
@@ -129,9 +129,9 @@ namespace Chronos.Timer.Tests.Core
         [TestMethod]
         public void ListTimers_ContainsSingleTimer_SingleElement()
         {
-            TimerInfo timer = _target.Register<MockTimer>(TimeSpan.FromSeconds(1), 1, () => { });
+            TimerProxy timer = _target.Register<MockTimer>(TimeSpan.FromSeconds(1), 1, () => { });
 
-            List<TimerInfo> timers = _target
+            List<TimerProxy> timers = _target
                 .GetTimers()
                 .ToList();
 
@@ -142,7 +142,7 @@ namespace Chronos.Timer.Tests.Core
         [TestMethod]
         public void RegisterUnregisterList_ReturnsExpectedTimers()
         {
-            List<TimerInfo> timers = new List<TimerInfo>();
+            List<TimerProxy> timers = new List<TimerProxy>();
 
             int totalTimers = 10;
 
@@ -156,7 +156,7 @@ namespace Chronos.Timer.Tests.Core
                 _target.Unregister(timers[i].Id);
             }
 
-            List<TimerInfo> runtimeTimers = _target.GetTimers().ToList();
+            List<TimerProxy> runtimeTimers = _target.GetTimers().ToList();
             
             Assert.AreEqual(totalTimers - totalTimers / 2, runtimeTimers.Count);
             

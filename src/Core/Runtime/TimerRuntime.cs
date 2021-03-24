@@ -69,7 +69,7 @@ namespace Chronos.Timer.Core
         /// <param name="numberOfExecution">The number of time an action should be executed.</param>
         /// <returns>A registered timer.</returns>
         /// <returns></returns>
-        public TimerInfo Register<T>(TimeSpan period, int numberOfExecution, Action actionToExecute) where T : ITimer
+        public TimerProxy Register<T>(TimeSpan period, int numberOfExecution, Action actionToExecute) where T : ITimer
             => Register(_timerFactory
                     .CreateTimer<T>(new BasicTimerAction(actionToExecute, period, numberOfExecution)));
 
@@ -79,7 +79,7 @@ namespace Chronos.Timer.Core
         /// <typeparam name="T">The timer type to register.</typeparam>
         /// <param name="timer">The timer to register.</param>
         /// <returns>The registered timer.</returns>
-        public TimerInfo Register<T>(T timer) where T : ITimer
+        public TimerProxy Register<T>(T timer) where T : ITimer
         {
             if (!_timers.ContainsKey(timer.Id))
             {
@@ -92,7 +92,7 @@ namespace Chronos.Timer.Core
                 StartUpdate();
             }
 
-            return new TimerInfo(timer);
+            return new TimerProxy(timer);
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace Chronos.Timer.Core
         /// </remarks>
         /// <exception cref="ArgumentNullException">Thrown if the timer passed in is null.</exception>
         /// <param name="timerInfo">The timer to unregister.</param>
-        public void Unregister(TimerInfo timerInfo)
+        public void Unregister(TimerProxy timerInfo)
         {
             timerInfo = timerInfo ?? throw new ArgumentNullException(nameof(timerInfo));
             Unregister(timerInfo.Id);
@@ -135,10 +135,10 @@ namespace Chronos.Timer.Core
         /// </summary>
         /// <param name="timerId">The id of the timer registered with this runtime.</param>
         /// <returns>Returns the timer with the given id, or null if the timer isn't found.</returns>
-        public TimerInfo GetTimer(Guid timerId)
+        public TimerProxy GetTimer(Guid timerId)
         {
             if (_timers.TryGetValue(timerId, out ITimer timer))
-                return new TimerInfo(timer);
+                return new TimerProxy(timer);
             return null;
         }
 
@@ -146,10 +146,10 @@ namespace Chronos.Timer.Core
         /// Gets all of the timers currently registered to this runtime.
         /// </summary>
         /// <returns>A <see cref="IEnumerable{T}"/> of all timers registered with this runtime.</returns>
-        public IEnumerable<TimerInfo> GetTimers()
+        public IEnumerable<TimerProxy> GetTimers()
             => _timers
                     .Values
-                    .Select(timer => new TimerInfo(timer));
+                    .Select(timer => new TimerProxy(timer));
 
         /// <summary>
         /// Starts the update thread.

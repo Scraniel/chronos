@@ -3,9 +3,9 @@
 namespace Chronos.Timer.Core
 {
     /// <summary>
-    /// Encapsulates timer-related information.
+    /// Encapsulates timer-related method and information.
     /// </summary>
-    public class TimerInfo
+    public class TimerProxy
     {
         private ITimer _timer;
 
@@ -38,7 +38,7 @@ namespace Chronos.Timer.Core
             get => _timer.Id;
         }
 
-        public TimerInfo(ITimer timer)
+        public TimerProxy(ITimer timer)
         {
             _timer = timer;
         }
