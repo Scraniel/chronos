@@ -16,8 +16,8 @@ namespace Chronos.Timer.Tests.Core
             _target = new TimerRuntime();
         }
 
-        [TestMethod, Timeout(50)]
-        public void Execute_TimeRemaining_Executes()
+        [TestMethod, Timeout(500)]
+        public void DefaultRegisterAndRun_Success()
         {
             bool hasExecuted = false;
             _target.Register<BasicTimer>(TimeSpan.FromMilliseconds(20), 1, () => { hasExecuted = true; });
