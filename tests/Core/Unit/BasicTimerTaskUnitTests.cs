@@ -65,12 +65,9 @@ namespace Chronos.Timer.Tests.Core
             Action task = () => { };
             TimeSpan interval = TimeSpan.FromMinutes(5);
 
-            try
-            {
-                ITimerAction timerEvent = new BasicTimerAction(task, interval, 0);
-                Assert.Fail();
-            }
-            catch (ArgumentOutOfRangeException) { }
+            Assert.ThrowsException<ArgumentOutOfRangeException>(
+                () => new BasicTimerAction(task, interval, 0)
+            );
         }
 
         [TestMethod]

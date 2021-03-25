@@ -71,7 +71,9 @@ namespace Chronos.Timer.Core
         /// <returns></returns>
         public TimerProxy Register<T>(TimeSpan period, int numberOfExecution, Action actionToExecute) where T : ITimer
             => Register(_timerFactory
-                    .CreateTimer<T>(new BasicTimerAction(actionToExecute, period, numberOfExecution)));
+                    .CreateTimer<T>(
+                        new BasicTimerAction(actionToExecute, period, numberOfExecution),
+                        new SystemTimeTrackingStrategy()));
 
         /// <summary>
         /// Registers the timer with the runtime.

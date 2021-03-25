@@ -13,6 +13,7 @@ namespace Chronos.Timer.Tests.Core
         private TimeSpan _timeStep = TimeSpan.FromSeconds(10);
         private TimeSpan _taskPeriod = TimeSpan.FromSeconds(5);
         private Action _noOpAction = () => { };
+
         private ITimer GetBasicTimerAndInitialize(List<Action> tasksToRun)
         {
             ITimer timer = new BasicTimer();
@@ -26,6 +27,15 @@ namespace Chronos.Timer.Tests.Core
             timer.Initialize(timeTrackingStrategy, tasks);
 
             return timer;
+        }
+
+        [TestMethod]
+        public void Initialize_NullTimeTrackingStrategy_ThrowsArgumentNullException()
+        {
+            BasicTimer timer = new BasicTimer();
+
+            Assert.ThrowsException<ArgumentNullException>(
+                () => timer.Initialize(null, new List<ITimerAction>()));
         }
 
         [TestMethod]
