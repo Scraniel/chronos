@@ -115,12 +115,14 @@ namespace Chronos.Timer.Tests.Core
             {
                 throw new NotImplementedException();
             }
-            void ITimer.Initialize(ITimeTrackingStrategy timeTrackingStrategy, IEnumerable<ITimerAction> timerTasks)
+
+            public void Initialize(IEnumerable<ITimerAction> timerTasks, ITimeTrackingStrategy timeTrackingStrategy)
             {
                 Initialized = true;
                 TimeTrackingStrategy = timeTrackingStrategy;
                 Tasks = timerTasks.ToList();
             }
+
             Task ITimer.UpdateAsync()
             {
                 throw new NotImplementedException();

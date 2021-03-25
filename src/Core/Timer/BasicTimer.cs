@@ -21,7 +21,7 @@ namespace Chronos.Timer.Core
             _timeTrackingStrategy = null;
         }
 
-        public void Initialize(ITimeTrackingStrategy timeTrackingStrategy, IEnumerable<ITimerAction> timerTasks)
+        public void Initialize(IEnumerable<ITimerAction> timerTasks, ITimeTrackingStrategy timeTrackingStrategy)
         {
             timeTrackingStrategy = timeTrackingStrategy ?? throw new ArgumentNullException(nameof(timeTrackingStrategy));
             

@@ -48,9 +48,9 @@ namespace Chronos.Timer.Core
         /// <summary>
         /// Initializes the timer with the given time tracking strategy and its associated tasks.
         /// </summary>
-        /// <param name="timeTrackingStrategy">The strategy which will provide the elapsed time.</param>
         /// <param name="timerTasks">List of tasks to be executed by this timer.</param>
-        public void Initialize(ITimeTrackingStrategy timeTrackingStrategy, IEnumerable<ITimerAction> timerTasks);
+        /// <param name="timeTrackingStrategy">The strategy which will provide the elapsed time.</param>
+        public void Initialize(IEnumerable<ITimerAction> timerTasks, ITimeTrackingStrategy timeTrackingStrategy);
 
         /// <summary>
         /// Updates the elapsed time stored in the timer one step forward in time as dictated by its 

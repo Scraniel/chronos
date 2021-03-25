@@ -24,7 +24,7 @@ namespace Chronos.Timer.Tests.Core
                     .ConvertAll((Action task) => { return new TestTimerAction(_timeStep, 1, task); })
                     .ToList<ITimerAction>();
             
-            timer.Initialize(timeTrackingStrategy, tasks);
+            timer.Initialize(tasks, timeTrackingStrategy);
 
             return timer;
         }
@@ -35,7 +35,7 @@ namespace Chronos.Timer.Tests.Core
             BasicTimer timer = new BasicTimer();
 
             Assert.ThrowsException<ArgumentNullException>(
-                () => timer.Initialize(null, new List<ITimerAction>()));
+                () => timer.Initialize(new List<ITimerAction>(), null));
         }
 
         [TestMethod]
@@ -156,7 +156,7 @@ namespace Chronos.Timer.Tests.Core
                 new TestTimerAction(_timeStep * 2, 2, () => { secondCounter++; }),
                 new TestTimerAction(_timeStep * 3, 1, () => { thirdCounter++; }),
             };          
-            timer.Initialize(timeTrackingStrategy, tasks);
+            timer.Initialize(tasks, timeTrackingStrategy);
 
             timer.UpdateAsync().Wait();
             Assert.AreEqual(1, firstCounter);
