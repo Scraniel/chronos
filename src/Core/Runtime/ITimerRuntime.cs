@@ -21,7 +21,7 @@ namespace Chronos.Timer.Core
         /// <param name="actionToExecute">The action to execute.</param>
         /// <param name="numberOfExecution">The number of time an action should be executed.</param>
         /// <returns>A registered timer.</returns>
-        T Register<T>(TimeSpan period, int numberOfExecution, Action actionToExecute)
+        TimerProxy Register<T>(TimeSpan period, int numberOfExecution, Action actionToExecute)
             where T : ITimer;
 
         /// <summary>
@@ -30,14 +30,14 @@ namespace Chronos.Timer.Core
         /// <typeparam name="T">The timer type to register.</typeparam>
         /// <param name="timer">The timer to register.</param>
         /// <returns>The registered timer.</returns>
-        T Register<T>(T timer)
+        TimerProxy Register<T>(T timer)
             where T : ITimer;
 
         /// <summary>
         /// Unregister a timer from the timer runtime. This will ensure that the timer is not updated/executed anymore.
         /// </summary>
         /// <param name="timer">The timer to unregister.</param>
-        void Unregister(ITimer timer);
+        void Unregister(TimerProxy timer);
 
         /// <summary>
         /// Unregister a timer from the timer runtime. This will ensure that the timer is not updated/executed anymore.
@@ -50,12 +50,12 @@ namespace Chronos.Timer.Core
         /// </summary>
         /// <param name="timerId">The id of the timer registered with this runtime.</param>
         /// <returns>Returns the timer with the given id.</returns>
-        ITimer GetTimer(Guid timerId);
+        TimerProxy GetTimer(Guid timerId);
 
         /// <summary>
         /// Gets all of the timers currently registered to this runtime.
         /// </summary>
         /// <returns>A <see cref="IEnumerable{T}"/> of all timers registered with this runtime.</returns>
-        IEnumerable<ITimer> GetTimers();
+        IEnumerable<TimerProxy> GetTimers();
     }
 }
