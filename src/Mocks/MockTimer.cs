@@ -37,7 +37,7 @@ namespace Chronos.Timer.Mocks
         public Task UpdateAsync()
             => OnUpdateAsync?.Invoke();
 
-        public void Initialize(ITimeTrackingStrategy timeTrackingStrategy, IEnumerable<ITimerAction> timerTasks)
+        public void Initialize(IEnumerable<ITimerAction> timerTasks, ITimeTrackingStrategy timeTrackingStrategy)
             => OnInitialize?.Invoke();
 
         /// <summary>

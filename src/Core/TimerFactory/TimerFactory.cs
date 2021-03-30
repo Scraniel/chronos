@@ -28,7 +28,7 @@ namespace Chronos.Timer.Core
         public T CreateTimer<T>(IEnumerable<ITimerAction> tasks, ITimeTrackingStrategy timeTracker = null) where T : ITimer
         {
             T timer = (T)Activator.CreateInstance(typeof(T));
-            timer.Initialize(timeTracker, tasks);
+            timer.Initialize(tasks, timeTracker);
             return timer;
         }
     }
