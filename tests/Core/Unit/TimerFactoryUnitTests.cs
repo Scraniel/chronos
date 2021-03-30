@@ -10,9 +10,15 @@ namespace Chronos.Timer.Tests.Core
     [TestClass]
     public class TimerFactoryUnitTests
     {
-        private readonly TimerFactory _target;
-        private readonly BasicTimerAction _timerTask;
+        private TimerFactory _target;
+        private BasicTimerAction _timerTask;
         public TimerFactoryUnitTests()
+        {
+
+        }
+        
+        [TestInitialize]
+        public void Initialize()
         {
             _target = new TimerFactory();
             _timerTask = new BasicTimerAction(() => { }, TimeSpan.FromSeconds(1), 1);

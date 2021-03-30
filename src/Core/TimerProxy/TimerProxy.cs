@@ -40,7 +40,7 @@ namespace Chronos.Timer.Core
 
         public TimerProxy(ITimer timer)
         {
-            _timer = timer;
+            _timer = timer ?? throw new ArgumentNullException(nameof(timer));
         }
 
         /// <summary>

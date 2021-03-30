@@ -17,7 +17,7 @@ namespace Chronos.Timer.Mocks
         public Action OnClear { get; set; }
         public Func<bool> OnIsPaused { get; set; } = () => false;
         public Action OnPause { get; set; }
-        public Action OnUnPause { get; set; }
+        public Action OnUnpause { get; set; }
         public Func<Task> OnUpdateAsync { get; set; }
         public Action OnInitialize { get; set; }
         #endregion
@@ -32,7 +32,7 @@ namespace Chronos.Timer.Mocks
             => OnPause?.Invoke();
 
         public void Unpause()
-            => OnUnPause?.Invoke();
+            => OnUnpause?.Invoke();
 
         public Task UpdateAsync()
             => OnUpdateAsync?.Invoke();
@@ -55,7 +55,7 @@ namespace Chronos.Timer.Mocks
                 OnInitialize = (Action)OnInitialize?.Clone(),
                 OnIsPaused = (Func<bool>)OnIsPaused?.Clone(),
                 OnPause = (Action)OnPause?.Clone(),
-                OnUnPause = (Action)OnUnPause?.Clone(),
+                OnUnpause = (Action)OnUnpause?.Clone(),
                 OnUpdateAsync = (Func<Task>)OnUpdateAsync?.Clone(),
             };
         }
